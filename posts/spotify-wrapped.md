@@ -174,20 +174,20 @@ Artist profiles are almost immutable, so we don't have a Split Count problem. Ho
 
 This query outputs the table
 
-|    Artist    | Saved songs |
-| :----------: | :---------: |
-|  Elton John  |     21      |
-|     ABBA     |     20      |
-|   Sabaton    |     19      |
-|    AC/DC     |     18      |
-| Dire Straits |     18      |
-| Taylor Swift |     18      |
-| David Bowie  |     15      |
-|  Ed Sheeran  |     13      |
-|   Bee Gees   |     12      |
-|    Queen     |     12      |
-| The Killers  |     12      |
-|  Take That   |     11      |
+|    Artist    | Saved tracks |
+| :----------: | :----------: |
+|  Elton John  |      21      |
+|     ABBA     |      20      |
+|   Sabaton    |      19      |
+|    AC/DC     |      18      |
+| Dire Straits |      18      |
+| Taylor Swift |      18      |
+| David Bowie  |      15      |
+|  Ed Sheeran  |      13      |
+|   Bee Gees   |      12      |
+|    Queen     |      12      |
+| The Killers  |      12      |
+|  Take That   |      11      |
 
 when run on my library.
 
@@ -225,18 +225,18 @@ partitions tracks by release decade.
 
 It outputs
 
-| Decade | Saved songs |
-| :----: | :---------: |
-|  1980  |     474     |
-|  2010  |     457     |
-|  2000  |     374     |
-|  1970  |     274     |
-|  1990  |     246     |
-|  1960  |     104     |
-|  2020  |     44      |
-|  1950  |     11      |
-|  1930  |      1      |
-|   0    |      1      |
+| Decade | Saved tracks |
+| :----: | :----------: |
+|  1980  |     474      |
+|  2010  |     457      |
+|  2000  |     374      |
+|  1970  |     274      |
+|  1990  |     246      |
+|  1960  |     104      |
+|  2020  |      44      |
+|  1950  |      11      |
+|  1930  |      1       |
+|   0    |      1       |
 
 when run on my library.[^7]
 
@@ -244,7 +244,7 @@ This child of the 2000s is more interested in music from the 1980s.
 
 ## Favourite genre
 
-No tracks, let alone albums, are tagged with genres. Suppose artists only perform music within their niche.[^8] In that case, you can safely label a song with the union of all its artists' genres.
+No tracks, let alone albums, are tagged with genres. Suppose artists only perform music within their niche.[^8] In that case, you can safely label a track with the union of all its artists' genres.
 
 The documentation for the saved tracks endpoint claims every track's `"artist"` key contains artist genres. I found this was not true. You will need to call [another endpoint](https://developer.spotify.com/documentation/web-api/reference/get-an-artist) to fetch artist genre information. If your library has $n$ artists, you will make $n$ API calls to determine your favourite genre.[^9]
 
@@ -271,16 +271,16 @@ order by count desc, genre;
 
 Rock, mainly classic rock, dominates my library:
 
-|    Genre     | Saved songs |
-| :----------: | :---------: |
-|     rock     |     516     |
-| classic rock |     308     |
-|  soft rock   |     303     |
-|     pop      |     292     |
-|  album rock  |     278     |
-| mellow gold  |     267     |
-|  hard rock   |     212     |
-| new wave pop |     206     |
+|    Genre     | Saved tracks |
+| :----------: | :----------: |
+|     rock     |     516      |
+| classic rock |     308      |
+|  soft rock   |     303      |
+|     pop      |     292      |
+|  album rock  |     278      |
+| mellow gold  |     267      |
+|  hard rock   |     212      |
+| new wave pop |     206      |
 
 [^1]: Competing streaming platforms like Apple Music recognized the marketing value of Spotify Wrapped and introduced similar campaigns.
 [^2]: [Apple Music Replay](https://music.apple.com/replay) is updated weekly. You do not need a third-party service to gain insight into listening habits on Apple Music.
