@@ -1,0 +1,42 @@
+{
+  "name": "bfdes.in",
+  "version": "1.0.0",
+  "description": "Personal blog",
+  "author": "Bruno Fernandes",
+  "license": "MIT",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bfdes/bfdes.in.git"
+  },
+  "type": "module",
+  "scripts": {
+    "build:project": "node esbuild.js",
+    "build:site": "node --enable-source-maps build.js",
+    "build": "npm run build:project && npm run build:site",
+    "format": "prettier --write .",
+    "test": "node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js --verbose --coverage"
+  },
+  "dependencies": {
+    "@wooorm/starry-night": "^2.0.0",
+    "hast-util-to-string": "^2.0.0",
+    "rehype-katex": "^6.0.3",
+    "rehype-stringify": "^9.0.3",
+    "remark-gfm": "^3.0.1",
+    "remark-math": "^5.1.1",
+    "remark-parse": "^10.0.2",
+    "remark-rehype": "^10.1.0",
+    "vfile": "5.3.7",
+    "vfile-matter": "4.0.1"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.3.62",
+    "@swc/jest": "^0.2.26",
+    "@trivago/prettier-plugin-sort-imports": "^4.1.1",
+    "esbuild": "^0.17.19",
+    "jest": "^29.5.0",
+    "prettier": "^2.8.8",
+    "prop-types": "^15.8.1",
+    "react-test-renderer": "^18.2.0"
+  }
+}
