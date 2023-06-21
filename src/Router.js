@@ -96,8 +96,8 @@ export default function Router(posts) {
         <File name="index.html">
           <Posts>{repo.posts}</Posts>
         </File>
-        {repo.posts.map((post) => (
-          <File name={`${post.slug}.html`}>
+        {repo.posts.map(({ slug, ...post }) => (
+          <File name={`${slug}.html`}>
             <Post {...post} />
           </File>
         ))}
@@ -105,7 +105,7 @@ export default function Router(posts) {
       <Dir name="tags">
         {tags.map((tag) => (
           <File name={`${slugify(tag)}.html`}>
-            <Posts>{posts.filter(({ tags }) => tags.includes(tag))}</Posts>
+            <Posts>{repo.posts.filter(({ tags }) => tags.includes(tag))}</Posts>
           </File>
         ))}
       </Dir>
