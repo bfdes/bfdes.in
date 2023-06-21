@@ -18,7 +18,6 @@ export default class Expression {
 
   equals(expression) {
     return (
-      expression instanceof Expression &&
       this.children.length == expression.children.length &&
       this.children.every((child, i) =>
         child instanceof Expression
