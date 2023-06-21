@@ -33,11 +33,11 @@ Categorizing tracks by genre is subjective. In practice, only artists, not album
 
 Assuming you have a valid access token, you can call [the saved tracks endpoint](https://developer.spotify.com/documentation/web-api/reference/get-users-saved-tracks) to fetch "liked" tracks:
 
-```bash
-curl --request GET \\
-  --url <https://api.spotify.com/v1/me/tracks> \\
+```shell
+curl \
+  --request GET \
+  --url https://api.spotify.com/v1/me/tracks \
   --header 'Authorization: Bearer acc3sst0k3n'
-
 ```
 
 Spotify pages the response for obvious reasons. Use your favourite scripting language to fetch the whole library.[^4]
