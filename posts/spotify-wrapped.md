@@ -154,7 +154,7 @@ The last query outputs the table
 
 when run on my library. (Note: I've removed soundtracks.)
 
-Lover by Taylor Swift is my favourite album. How embarrassing!
+Lover by Taylor Swift is my favourite album :sweat_smile:. How embarrassing!
 
 ## Popular artists
 
@@ -285,7 +285,7 @@ Rock, mainly classic rock, dominates my library:
 [^1]: Competing streaming platforms like Apple Music recognized the marketing value of Spotify Wrapped and introduced similar campaigns.
 [^2]: [Apple Music Replay](https://music.apple.com/replay) is updated weekly. You do not need a third-party service to gain insight into listening habits on Apple Music.
 [^3]: Granular rate limiting is only possible with API keys.
-[^4]: Your favourite scripting language should be Python. Only joking.
+[^4]: Your favourite scripting language should be Python. Only joking :stuck_out_tongue:.
 [^5]: However, you can get [a list of top tracks](https://developer.spotify.com/documentation/web-api/reference/get-users-top-artists-and-tracks) based on Spotify's notion of popularity.
 [^6]:
     You can find out whether Multiple Count affects you by comparing the output of

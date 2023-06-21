@@ -3,6 +3,7 @@ import rehypeStarryNight from "./rehypeStarryNight";
 import slugify from "./slugify";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
+import remarkGemoji from "remark-gemoji";
 import remarkGFM from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkParse from "remark-parse";
@@ -34,6 +35,7 @@ export async function parse(file) {
 
   const body = await unified()
     .use(remarkParse)
+    .use(remarkGemoji)
     .use(remarkGFM)
     .use(remarkMath)
     .use(remarkRehype)
@@ -48,6 +50,7 @@ export async function parse(file) {
 
   const wordCount = await unified()
     .use(remarkParse)
+    .use(remarkGemoji)
     .use(remarkGFM)
     .use(remarkMath)
     .use(remarkCount)
