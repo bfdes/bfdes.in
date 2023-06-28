@@ -20,6 +20,10 @@ export class File extends FileSystem {
 }
 
 export class Dir extends FileSystem {
+  constructor(name, content = []) {
+    super(name, content);
+  }
+
   contains(name) {
     return (
       this.name == name || this.content.some((file) => file.contains(name))
