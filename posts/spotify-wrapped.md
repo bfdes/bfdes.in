@@ -25,7 +25,7 @@ Spotify organizes data in the following way:
 
 - Every track is associated with an album
 - Every track is associated with one or more artists
-- Every album is an "album", a "single", or a "compilation"
+- Every album is an "album," a "single," or a "compilation"
 - An album may be associated with one or more genres
 - An artist may be associated with one or more genres
 
@@ -40,11 +40,13 @@ curl \
   --header 'Authorization: Bearer acc3sst0k3n'
 ```
 
-Spotify pages the response for obvious reasons. Use your favourite scripting language to fetch the whole library.[^4]
+Spotify pages the response for obvious reasons. Use your favorite scripting language to fetch the whole library.[^4]
 
 Please be considerate and run your queries against cached data. Not directly against the Web API. I wrote the saved tracks API response to CSV files and loaded them into [SQLite](https://www.sqlite.org). The rest of this blog post will make sense if you do the same thing.
 
-Each CSV file corresponds to an SQLite table. The table schemas mirror the way Spotify manages track data. Execute
+Each CSV file corresponds to an SQLite table. The table schemas mirror the way Spotify manages track data.
+
+Execute
 
 ```sql
 create table album (
@@ -154,7 +156,7 @@ The last query outputs the table
 
 when run on my library. (Note: I've removed soundtracks.)
 
-Lover by Taylor Swift is my favourite album :sweat_smile:. How embarrassing!
+Lover by Taylor Swift is my favorite album :sweat_smile:. How embarrassing!
 
 ## Popular artists
 
@@ -193,7 +195,7 @@ when run on my library.
 
 The results are unsurprising. Almost all featured artists enjoy -- or have enjoyed -- enormous commercial success. Sabaton is the only unusual result.
 
-## Favourite era
+## Favorite era
 
 Let's define the popularity of an era by the number of library tracks published in that period.
 
@@ -242,11 +244,11 @@ when run on my library.[^7]
 
 This child of the 2000s is more interested in music from the 1980s.
 
-## Favourite genre
+## Favorite genre
 
 No tracks, let alone albums, are tagged with genres. Suppose artists only perform music within their niche.[^8] In that case, you can safely label a track with the union of all its artists' genres.
 
-The documentation for the saved tracks endpoint claims every track's `"artist"` key contains artist genres. I found this was not true. You will need to call [another endpoint](https://developer.spotify.com/documentation/web-api/reference/get-an-artist) to fetch artist genre information. If your library has $n$ artists, you will make $n$ API calls to determine your favourite genre.[^9]
+The documentation for the saved tracks endpoint claims every track's `"artist"` key contains artist genres. I found this was not true. You will need to call [another endpoint](https://developer.spotify.com/documentation/web-api/reference/get-an-artist) to fetch artist genre information. If your library has $n$ artists, you will make $n$ API calls to determine your favorite genre.[^9]
 
 Introduce a new table to represent the many-to-many relationship between artists and genres:
 
@@ -255,7 +257,7 @@ create table artist_genre(
   artist_id text not null references artist(artist_id),
   genre text not null,
   primary key (artist_id, genre)
-)
+);
 ```
 
 Partition tracks by genres from this join table to figure out the most popular genres:
@@ -285,7 +287,7 @@ Rock, mainly classic rock, dominates my library:
 [^1]: Competing streaming platforms like Apple Music recognized the marketing value of Spotify Wrapped and introduced similar campaigns.
 [^2]: [Apple Music Replay](https://music.apple.com/replay) is updated weekly. You do not need a third-party service to gain insight into listening habits on Apple Music.
 [^3]: Granular rate limiting is only possible with API keys.
-[^4]: Your favourite scripting language should be Python. Only joking :stuck_out_tongue:.
+[^4]: Your favorite scripting language should be Python. Only joking :stuck_out_tongue:.
 [^5]: However, you can get [a list of top tracks](https://developer.spotify.com/documentation/web-api/reference/get-users-top-artists-and-tracks) based on Spotify's notion of popularity.
 [^6]:
     You can find out whether Multiple Count affects you by comparing the output of
