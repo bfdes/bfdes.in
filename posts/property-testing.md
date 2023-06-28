@@ -5,219 +5,227 @@ created: 2018-10-15
 summary: An introduction to property-based testing and its applications in standard library algorithm validation
 ---
 
-Property testing is an effective strategy for verifying the correctness of complex programs and libraries. It involves defining a set of properties that functions or programs should obey. Essentially, the developer writes a specification for their work.
+Property testing is a strategy for verifying the correctness of complex programs and libraries. It involves defining a set of properties that programs should obey. Essentially, the programmer writes a specification for their work.
 
-Properties are usually defined with the aid of a property testing library, like Haskell's QuickCheck.[^1] These libraries also enable users to generate sample data to drive properties during test execution.
+You define properties with a property testing library, like Haskell's QuickCheck.[^1] These libraries also enable users to generate sample data to drive properties during test execution.
 
-For example, a specification that verifies a JSON parsing library can parse whatever objects it stringifies would look like
+For example, this [ScalaCheck](https://www.scalacheck.org/) property says a JSON parser can decode any object it encodes:[^2]
 
 ```scala
 object JsonSpecification extends Properties("encode & decode") {
-  property("roundtrip") = Prop.forAll(json) { js =>
-    Json.decode(Json.encode(js)) == js
+  property("roundtrip") = Prop.forAll(json) { json =>
+    Json.decode(Json.encode(json)) == Right(json)
   }
 }
 ```
 
-in Scala, with [ScalaCheck](https://www.scalacheck.org/).
+We will write property tests for a sorting algorithm to illustrate the value of property testing.
 
-Mathematically speaking, it says that the `decode` function is an inverse of the `encode` function.[^2] In fact, specifying properties corresponds to how proofs of correctness are constructed in maths.[^3]
-
-We will write a property test suite for an implementation of the mergesort algorithm to illustrate the value of property testing. The test suite will need to be comprehensive, as millions of people will be using our library.[^4]
-
-Knowledge of Scala is not required to follow this post, but it could help you focus on the ideas being presented instead of language syntax.
-
-You can find the completed test suite as a GitHub [gist](https://gist.github.com/bfdes/88f3292aa2d23e619714bee4221799d8). It prints
-
-```plaintext
-+ mergeSort.isSorted: OK, passed 100 tests.
-+ mergeSort.hasSameKeys: OK, passed 100 tests.
-```
-
-when it runs.
+Fluency with Scala -- or a similar functional programming language -- is required to follow the rest of this post.[^3]
 
 ## Properties VS Assertions
 
-In an example-based test, we assert that the program under test behaves as we expect for a single input value. A property-based test verifies that a program behaves correctly for a family of input values.
+In a typical unit test, we assert that the function under test behaves as expected for a single input value. A property test verifies that a function behaves correctly for _a family_ of input values.
 
-A single property test for a program usually gives us more confidence that our code works than multiple ordinary test cases. For example, compare the table-driven test suite
+If a test function has a finite domain, ScalaCheck can generate input exhaustively. Otherwise, we have to resort to sampling.[^4] Regardless, a single property test for a function usually gives us more confidence that our code works than multiple unit tests.
 
-```scala
-object EncodeDecodeTestSuite extends TestSuite {
-  private val testInputs =
-    List(
-      Json.num(13),
-      Json.str("foo"),
-      Json.arr("foo", "bar"),
-      Json.obj("foo" -> "bar")
-    )
+However, table-driven tests are better at documenting edge case behavior. They also ensure tests always run for edge case input. For JSON parsing, edge case input includes empty JSON strings, arrays, and objects.
 
-  testInputs.foreach { js =>
-    test(s"encode & decode roundtrips $js") {
-      assert(Json.decode(Json.encode(js)) == js)
-    }
-  }
-}
-```
+## A specification for sorting
 
-to the simple specification we saw before, which checks that many more input values roundtrip.[^5]
+A sorting algorithm satisfies two properties:
 
-ScalaCheck can exhaustively generate test cases for functions that have a finite domain. For functions with an infinitely sized domain, such as the sorting function we will look at, we have to write generators that _sample_ the function domain.[^6]
+1. It permutes its input to form its output, and
+2. it reorders its input according to a [total order](https://en.wikipedia.org/wiki/Total_order).
 
-Example-based tests are better at documenting edge case behaviour, or ensuring that tests always run for edge case input. For JSON parsing, edge case input could include empty strings, arrays or objects:
+Stable sorting algorithms satisfy a third property: they preserve the relative order of elements with identical sort keys.[^5]
 
-```scala
-assert(Json.encode(Json.decode("")) == Json.str(""))
-assert(Json.encode(Json.decode(Json.arr())) == Json.arr())
-assert(Json.encode(Json.decode(Json.obj())) == Json.obj())
-```
+Sorting algorithms act on linear data structures like arrays and lists. Most sorting algorithms admit [side effects](<https://en.wikipedia.org/wiki/Side_effect_(computer_science)>), which makes them awkward to use in functional programming.
 
-## A Specification for sorting
-
-Formally, a sorting function is defined by two properties:
-
-1. It must permute its **input** to form its **output**
-
-$$
-\left(a_i \mid i \in I \right) = \left(a'_i \mid i \in I \right)
-$$
-
-2. It must order its input to form its output according to a [total order](https://en.wikipedia.org/wiki/Total_order)
-
-$$
-a'_i \leq a'_j \space \forall \space i, j \in \{i, j \in I \mid i < j\}
-$$
-
-We have described arrays as a [family](https://math.stackexchange.com/questions/361449/notation-for-an-array/361530#361530), and the primed elements belong to the permuted array.
-
-To help write the tests, we need a utility to check the keys of an array are in sorted order:
-
-```scala
-def isSorted[T](a: Array[T])(implicit o: Ordering[T]): Boolean =
-  Range(0, a.length - 1).forall(i => a(i) <= a(i + 1))
-```
-
-, and a `Histogram` abstraction to count keys:
-
-```scala
-case class Histogram[K] private (value: Map[K, Int]) {
-  def +(key: K): Histogram[K] = {
-    val count = value.getOrElse(key, 0) + 1
-    Histogram(value + (key -> count))
-  }
-}
-
-object Histogram {
-  def empty[K]: Histogram[K] = new Histogram(Map.empty)
-
-  def apply[K](keys: Seq[K]): Histogram[K] =
-    keys.foldLeft(Histogram.empty[K])(_ + _)
-}
-```
+Fortunately, the top-down variant of mergesort can sort a [list](https://en.wikipedia.org/wiki/Cons) without performing side effects. We will look at this sorting algorithm as it leads to elegant property definitions.
 
 ## Mergesort
 
-The [gist](https://gist.github.com/bfdes/88f3292aa2d23e619714bee4221799d8) contains an implementation of mergesort transcribed to Scala from [Algorithms I](https://www.coursera.org/learn/algorithms-part1).[^7]
+Top-down mergesort is a divide-and-conquer algorithm. It splits a list in two, recursively sorts the partitions, and then merges them.
 
-Mergesort is a divide-and-conquer algorithm; it consists of two subroutines:
+Suppose we have two functions,
 
-1. One splits an array in two and recursively sorts the partitions, and
-2. the other merges sorted partitions.
+1. `split`, which divides a list into two lists, and
+2. `merge`, which combines two sorted lists into a longer sorted list;
 
-Note that our implementation `mergeSort` carries out a stable sort -- it ensures that any two keys which compare equally maintain their relative positions in an array. Writing a property to verify `mergeSort` is indeed stable is left as an exercise for the reader.[^8]
+then we can write mergesort as a [pure function](https://en.wikipedia.org/wiki/Pure_function):
 
-## Testing with ScalaCheck
+```scala
+def sort[T](list: List[T])(implicit ordering: Ordering[T]): List[T] =
+  list match {
+    case Nil         => Nil
+    case head :: Nil => list
+    case _ =>
+      split(list) match {
+        case (left, right) => merge(sort(left), sort(right))
+      }
+  }
+```
 
-To use ScalaCheck, we need to be aware of two data types it exports:
+This version of mergesort performs an asymptotically optimal number of comparisons, despite being pure.[^6]
 
-- `Gen[T]` instances encode all the information necessary to produce samples of type `T`
-- `Prop` instances enable us to verify properties by sampling generators
+`split` is a general-purpose function.[^7] Like `sort`, `split` is recursive:
+
+```scala
+def split[T](list: List[T]): (List[T], List[T]) =
+  list match {
+    case Nil => (Nil, Nil)
+    case head :: tail =>
+      split(tail) match {
+        case (left, right) => (right, head :: left)
+      }
+  }
+```
+
+By switching the position of `left` and `right`, `split` ensures that its return values differ in length at most by one.[^8]
+
+`merge` is easier to implement than `split`:
+
+```scala
+import math.Ordering.Implicits.infixOrderingOps
+
+def merge(l: List[T], r: List[T]): List[T] =
+  (l, r) match {
+    case (Nil, _) => r
+    case (_, Nil) => l
+    case (lh :: lt, rh :: _) if lh <= rh =>
+      lh :: merge(lt, r)
+    case (_, rh :: rt) =>
+      rh :: merge(l, rt)
+  }
+```
+
+## Testing, Testing
+
+To use ScalaCheck, we need to be aware of two data types it exports: `Gen`, and `Prop`.
+
+A `Gen[T]` instance encodes all the information necessary to produce samples of type `T`. `Prop` allows us to define properties. A `Prop` instance verifies a property by sampling a `Gen[T]` instance.
 
 ### Writing generators
 
-It is impossible to create generators for the infinite number of input types that generic functions like `mergeSort[T]` accept, so we have to limit ourselves to a handful. For the sake of simplicity, let's only feed the sorting function with positive integer array input.
+`sort` is a generic function — it would be pretty useless otherwise. We can’t write generators for the infinite number of input types that generic functions accept. We have to limit ourselves to a handful of types. For the sake of simplicity, let's feed `sort` with positive integer lists.
 
-We can use the combinators ScalaCheck provides to quickly write a generator for integer arrays:
+We can use the combinators ScalaCheck provides to write a generator for lists:
 
 ```scala
-val ints: Gen[Array[Int]] =
-  Gen.containerOf[Array, Int](Gen.posNum[Int])
+val ints: Gen[List[Int]] =
+  Gen.listOf(Gen.posNum[Int])
 ```
 
-ScalaCheck will choose the number of samples to generate when running a test, as well as the size of the largest array. It may not behave as we want it to by default.[^6]
+ScalaCheck will choose the number of lists to generate when running a test. It will also pick the size of the largest list. ScalaCheck may not behave as we want it to by default.[^9]
 
 ### Writing properties
 
-It is straightforward to write property number one, given the array generator we already have:
+The first property practically writes itself if we already have a counter abstraction:
 
 ```scala
-Prop.forAll(ints) { a =>
-  mergeSort(a)
-  isSorted(a)
+object SortingSpecification extends Properties("sort") {
+  property("permutes its input") =
+    Props.forAll(ints) { list =>
+      Counter(sort(list)) == Counter(list)
+    }
 }
 ```
 
-Writing property number two is only slightly more involved:
+Scala has no counter type in its standard library, so we must write our own. Thankfully, it is straightforward to implement `Counter`:
 
 ```scala
-Prop.forAll(ints) { a =>
-  val before = Histogram(a.toList)
-  mergeSort(a)
-  val after = Histogram(a.toList)
-  before == after
-}
-```
+case class Counter[K] private (keys: Map[K, Int]) {
+  def apply(key: K): Int = keys.getOrElse(key, 0)
 
-### Putting it all together
-
-We have everything we need to test `mergeSort` works (for integer arrays):
-
-```scala
-object SortingSpecification extends Properties("mergeSort") {
-  val array: Gen[Array[Int]] =
-    Gen.containerOf[Array, Int](Gen.posNum[Int])
-
-  property("isSorted") = Prop.forAll(array) { a =>
-    mergeSort(a)
-    isSorted(a)
+  def +(key: K): Counter[K] = {
+    val count = this(key) + 1
+    Counter(keys + (key -> count))
   }
 
-  property("hasSameKeys") = Prop.forAll(array) { a =>
-    val before = Histogram(a.toList)
-    mergeSort(a)
-    val after = Histogram(a.toList)
-    before == after
+  def -(key: K): Counter[K] = {
+    val count = Math.max(this(key) - 1, 0)
+    Counter(keys + (key -> count))
   }
+}
+
+object Counter {
+  def empty[K]: Counter[K] = new Counter(Map.empty)
+
+  def apply[K](keys: Seq[K]): Counter[K] =
+    keys.foldLeft(Counter.empty[K])(_ + _)
 }
 ```
 
-That's it! Not a lot of code, considering the problem we were trying to solve.
+The second property is also simple to write:
 
-If `mergeSort` is faulty for whatever reason, then ScalaCheck will
+```scala
+import math.Ordering.Implicits.infixOrderingOps
 
-1. "shrink" the input to find the smallest possible array that fails to be sorted, and
-2. print out the seed for the failing test to aid debugging.
+def isSorted[T](list: List[T])(implicit ordering: Ordering[T]): Boolean =
+  list.zip(list.tail).forall { case (left, right) => left <= right }
 
-```plaintext
-failing seed for mergeSort.isSorted is 1GSNrW_g7K6qDK0yf7ZVqjncxQGRBA2_afg_I2PsRKC=
-! mergeSort.isSorted: Falsified after 10 passed tests.
-> ARG_0: Array("1", "1", "0")
-> ARG_0_ORIGINAL: Array("10", "95", "78", "13", "64")
+object SortingSpecification extends Properties("sort") {
+  property("returns a sorted list") =
+    Prop.forAll(ints)(isSorted compose sort)
+}
 ```
 
-If you want more insight into how ScalaCheck works, take a look at the book [Functional Programming in Scala](https://www.manning.com/books/functional-programming-in-scala). Chapter eight walks the reader through designing a similar library from scratch.
+If `sort` is faulty ScalaCheck will
+
+1. "shrink" input to find the smallest list it cannot sort, and
+2. print out the seed of the failing test run to aid debugging.
+
+```
+failing seed for sort is 1GSNrW_g7K6qDK0yf7ZVqjncxQGRBA2_afg_I2PsRKC=
+! sort.`permutes its input`: Falsified after 10 passed tests.
+> ARG_0: List("1", "1", "0")
+> ARG_0_ORIGINAL: LIst("10", "95", "78", "13", "64")
+```
+
+If you want more insight into how ScalaCheck works, look at the book [Functional Programming in Scala](https://www.manning.com/books/functional-programming-in-scala). In chapter eight, readers develop a property testing library from first principles.
 
 [^1]: QuickCheck [pioneered](https://doi.org/10.1145/351240.351266) property testing.
-[^2]: You might want to write regression tests to verify `encode(decode(js)) == js`.
-[^3]: For example, the associative, identity, and commutative laws of vector addition are properties.
-[^4]: Only joking. Even I won't be relying on the implementation.
-[^5]: One caveat: The variety of JSON objects generated is dependent on how well `json` is written.
-[^6]: Obtaining representative samples is hard. Larger arrays can encode exponentially more states than smaller ones, so should a sorting algorithm be tested more frequently with larger arrays?
-[^7]: Specifically, it contains a top-down implementation of mergesort.
-[^8]: Hint: Consider sorting a list of restaurants in a food delivery app:
+[^2]: You may wish to write regression tests to also verify `decode(str).map(encode) == Right(str)`.
+[^3]: You have been warned!
+[^4]:
+    Astute readers will realize `JsonSpecification` relies on sampling. We must use lazy generation to sample instances of tree [ADT](https://en.wikipedia.org/wiki/Abstract_data_type)s like `Json`.
+
+    Here is one way of implementing `json`:
 
     ```scala
-    case class Venue(name: String, distance: Double, rating: Int)
+    val arr: Gen[Json] = Gen.listOfN(4, json).map(Json.arr)
+
+    val kv: Gen[(String, Json)] =
+      for {
+        key <- Gen.asciiStr
+        value <- json
+      } yield (key, value)
+
+    val obj: Gen[Json] = Gen.listOfN(4, kv).map(Json.obj)
+
+    val json: Gen[Json] =
+      Gen.delay(
+        Gen.frequency(
+          2 -> bool, 2 -> num, 2 -> str,
+          3 -> arr, 3 -> obj
+        )
+      )
     ```
 
-    Ordering venues by customer rating and then by distance should _always_ have the same result as ordering venues by distance and breaking ties on rating.
+    Notice two safeguards limit the size of JSON arrays and objects:
+
+    1. `Gen.listOfN` ensures collections have at most four keys
+    2. `Gen.frequency` ensures `json` generates a collection on every other call
+
+    Let $$D$$ be a random variable that denotes the depth of nested collections. It can be shown that $$D \sim \text{Geo}\left(\dfrac{1}{2}\right)$$. Thus, on average, `json` will generate collections with two levels of nesting.
+
+[^5]: Many applications require stable sorting. Users of a food delivery app usually sort restaurants by customer rating, and then by delivery distance. They expect the app to rank equally distant restaurants in order of customer rating.
+[^6]: It can be shown that top-down mergesort performs $$\Theta(n\lg n)$$ comparisons.
+[^7]:
+    This elegant implementation of `split` [is due to Evan Czaplicki's professor](https://functional-programming-in-elm.netlify.app/appendix/split.html).
+
+    Unfortunately, `split` leads to an unstable sort :cry:. Why is that? Can you write a crude version of `split` that leads to a stable sort?
+
+[^8]: You can prove this result by [mathematical induction](https://en.wikipedia.org/wiki/Mathematical_induction). Start by assuming it holds for all lists of length $$2n$$, where $$n \in \Z_0$$.
+[^9]: Obtaining representative samples is tricky. Larger lists can encode exponentially more states than smaller ones. Should a sorting algorithm be tested more frequently with large lists? :thinking:
