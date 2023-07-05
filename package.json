@@ -35,7 +35,7 @@
     "@swc/jest": "^0.2.26",
     "@trivago/prettier-plugin-sort-imports": "^4.1.1",
     "esbuild": "^0.18.11",
-    "jest": "^29.5.0",
+    "jest": "^29.6.0",
     "prettier": "^2.8.8",
     "prop-types": "^15.8.1",
     "react-test-renderer": "^18.2.0"
