@@ -18,7 +18,7 @@
     "test": "node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js --verbose --coverage"
   },
   "dependencies": {
-    "@wooorm/starry-night": "^2.1.1",
+    "@wooorm/starry-night": "^3.0.0",
     "hast-util-to-string": "^3.0.0",
     "rehype-katex": "^6.0.3",
     "rehype-stringify": "^10.0.0",
