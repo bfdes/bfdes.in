@@ -470,7 +470,7 @@ It verifies the sidebar of this blog displays four links.
 ```javascript
 class Expression {
   contains(expression) {
-    return this.find((e) => e.equals(expression)).length == 1;
+    return this.find((e) => e.equals(expression)).length > 0;
   }
 }
 ```
