@@ -34,8 +34,8 @@ export default class FileReader {
         .map((entry) =>
           entry.isFile()
             ? this.readFile(path.join(dirPath, entry.name))
-            : this.readDir(path.join(dirPath, entry.name))
-        )
+            : this.readDir(path.join(dirPath, entry.name)),
+        ),
     );
     const name = path.basename(dirPath);
     return new Dir(name, files);
@@ -56,7 +56,7 @@ export default class FileReader {
       return await this.readDir(path);
     }
     throw new IllegalArgumentError(
-      "Argument to `read` must be a file or directory"
+      "Argument to `read` must be a file or directory",
     );
   }
 }

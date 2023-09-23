@@ -11,7 +11,7 @@ export default class Expression {
       this.children.some((child) =>
         child instanceof Expression
           ? child.contains(expression)
-          : child === expression
+          : child === expression,
       )
     );
   }
@@ -22,7 +22,7 @@ export default class Expression {
       this.children.every((child, i) =>
         child instanceof Expression
           ? child.equals(expression.children[i])
-          : child === expression.children[i]
+          : child === expression.children[i],
       )
     );
   }

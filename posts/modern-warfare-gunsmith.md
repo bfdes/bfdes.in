@@ -5,71 +5,84 @@ created: 2019-12-05
 summary: Applying combinatorial optimization to competitive multiplayer video game strategy
 ---
 
-[Gunsmith](https://blog.activision.com/call-of-duty/2019-09/A-Deeper-Look-at-Modern-Warfare-Customization) is a weapon customization system in the [first-person shooter](https://en.wikipedia.org/wiki/First-person_shooter) franchise Call Of Duty. Modern Warfare, the latest entry in the Call Of Duty series, takes weapon customization a step further than its predecessors.
+[Gunsmith](https://blog.activision.com/call-of-duty/2019-09/A-Deeper-Look-at-Modern-Warfare-Customization) is a weapon customization system in the [first-person shooter](https://en.wikipedia.org/wiki/First-person_shooter) franchise Call Of Duty. The latest entry in the Call Of Duty series, Modern Warfare, takes weapon customization further than its predecessors.
 
-In multiplayer matches, players are pit against each other in deathmatch or objective capture game modes. Good gunplay and weapon customization is an important part of the competitive experience. Your loadout can make or break a match.
+Call Of Duty pits players against each other in deathmatch or objective capture game modes. Good gunplay and weapon customization are vital to the competitive experience. Your loadout can make or break a match.
 
-I wondered whether it would be possible to determine the "best" modifications for a weapon without trying out every permutation of attachments.
+I wondered whether it would be possible to determine the "best" loadout without trying out every weapon.
 
 ## Gunsmith
 
-In the game world, each weapon has a set of base attributes that define how it handles. These include, but are not limited to, the weapon's range, its damage and the recoil it imparts.
+In the game world, each weapon has attributes that determine how it handles. Attributes include but are not limited to weapon range, damage, and recoil.
 
-For example, submachine guns like the MP5 are easier to control than assault rifles but typically do less damage at long range.[^1]
+For the sake of balance, there are no overpowered weapons.[^1] For example, submachine guns, which impart less recoil than assault rifles, have poor maximum effective range.[^2]
 
-The following table illustrates the performance of an MP5 relative to an M4A1 carbine:
+The following table compares an MP5 submachine gun to an M4A1 [carbine](https://en.wikipedia.org/wiki/Carbine):
 
-|      | range | damage | recoil control | manoeuvrability |
+|      | range | damage | recoil control | maneuverability |
 | ---- | :---: | :----: | :------------: | :-------------: |
 | MP5  |   5   |   4    |       7        |        6        |
 | M4A1 |   7   |   4    |       4        |        4        |
 
-In Gunsmith, players can add attachments to up to five different places on a weapon. For the sake of gameplay balance, generally, each attachment or modification improves some attributes and worsens others.
+Note that values in the table are not real; they are merely for illustration.
 
-For example, a short-barrelled MP5K will be more manoeuvrable than a regular MP5, but it will suffer from high recoil.[^2] Depending on how you play, this might be an acceptable tradeoff.
+In Gunsmith, players can add attachments to a weapon to create a loadout. Each attachment or modification enhances some attributes but degrades others. Again, for game balance.
 
-|      | range | damage | recoil control | manoeuvrability |
+For example, an MP5K is more maneuverable than an MP5, owing to its short barrel.[^3] But, for the same reason, an MP5K suffers from high recoil. Depending on how you play, this might be an acceptable tradeoff.
+
+|      | range | damage | recoil control | maneuverability |
 | ---- | :---: | :----: | :------------: | :-------------: |
 | MP5  |   5   |   4    |       7        |        6        |
 | MP5K |   4   |   4    |       5        |        8        |
 
-To proceed, the key insight we need is to recognize that choosing a loadout is the same as solving a microeconomic optimization problem. Effectively, we seek to maximize a player’s [utility](https://en.wikipedia.org/wiki/Utility) subject to cost constraints imposed by game mechanics. Here, utility describes the increased performance a player derives from using their preferred loadout.
+## Player Utility
 
-## Weapon Utility
+To get anywhere, we need to quantify the preference a player has for a loadout.
 
-Let's model utility $U$ as a function of the weapon attributes, represented as a vector $\mathbf{x}$.
+Humor me for a moment. Imagine we have a function
 
-Game mechanics dictate that the model should have the following properties:
+$$
+ U: \R^n \to \R
+$$
 
-1. Each attribute $x_i$ contributes independently to an increase in utility[^3]
+that does just this.[^4] It maps the set of attribute vectors to the set of real numbers. The higher the value $U(\mathbf{x})$, the greater the user's preference for a loadout with attributes $\mathbf{x}$.[^5]
+
+Recognize that $U$ represents microeconomic [utility](https://en.wikipedia.org/wiki/Utility). Effectively, we seek to maximize utility subject to constraints imposed by game mechanics.
+
+We can safely assume two things:
+
+1. Each attribute contributes independently to utility[^6]
 
 $$
 U(\mathbf{x}) = \displaystyle\sum_i U_i(x_i)
 $$
 
-2. For a given attribute, larger values are always preferred to smaller ones
+2. Large attribute values are always better than small ones[^7]
 
 $$
 \dfrac{\partial U}{\partial x_i} > 0 \ \forall \ i
 $$
 
-Note that the second property is in line with the [nonsatiation assumption](https://en.wikipedia.org/wiki/Local_nonsatiation) of Consumer Theory.
-
-The attribute vector itself comprises a base term $\mathbf{x_0}$ and the sum of contributions from attachments. If we denote the presence of the _j-th_ attachment in the _i-th_ slot by a boolean variable $X_{ij} \in \{0, 1\}$, we can then write
+The attribute vector consists of base weapon attributes $\mathbf{x_0}$ and the sum of contributions from attachments. If we denote the presence of the $j$-th attachment in the $i$-th slot by a boolean variable $X_{ij} \in \{0, 1\}$, we can write
 
 $$
 \mathbf{x} = \mathbf{x_0} + \displaystyle\sum_i^m \displaystyle\sum_j^{n_i} X_{ij}\mathbf{\Delta x}_{ij}
 $$
 
-Apart from the integrality constraint on $X_{ij}$, there are two other constraints to state:
+Here
 
-1. Game mechanics mean we are restricted to making five modifications
+- $n_i$ is the number of attachments you can put into the $i$-th slot, and
+- $m$ is the number of weapon slots.
+
+Game mechanics impose two constraints:
+
+1. The player is restricted to five modifications
 
 $$
 \displaystyle\sum_i^m \displaystyle\sum_j^{n_i} X_{ij} \leq 5
 $$
 
-2. We cannot make more than one modification in the same place or "slot"
+2. Each "slot" can only accept one attachment
 
 $$
 \displaystyle\sum_j^{n_i} X_{ij} \leq 1 \ \forall \ i
@@ -77,62 +90,72 @@ $$
 
 ## Combinatorial optimization
 
-[Combinatorics](https://en.wikipedia.org/wiki/Combinatorics) can be used to gauge the size of the problem we are trying to solve.
+How many ways $N$ are there to modify a typical weapon?
 
-Suppose every slot supports at least three modifications, and every weapon has at least five slots, so that $n_i \geq 3 \ \forall \ i$, and $m \geq 5$. Then we can obtain a lower bound for $N$, the number of distinct ways of modifying a typical weapon:
+[Combinatorics](https://en.wikipedia.org/wiki/Combinatorics) can help us obtain bounds on $N$.
 
-$$
-\begin{aligned}
-  N   &\geq \displaystyle\sum_{k=0}^5 \dfrac{m!}{k!(m-k)!} 3^k \\
-      &\geq \displaystyle\sum_{k=0}^5 \dfrac{5!}{k!(5-k)!} 3^k \\
-      &= (1+3)^5 = 1024
-\end{aligned}
-$$
-
-Note that we used the [binomial theorem](https://en.wikipedia.org/wiki/Binomial_theorem) to derive the last line.
-
-Now suppose $n_i \leq 9 \ \forall \ i$, and $m \leq 7$, again for all weapons. This leads us to an upper bound for $N$:
+Suppose every slot supports at least three modifications, and every weapon has at least seven slots.
 
 $$
 \begin{aligned}
-    N   &\leq \displaystyle\sum_{k=0}^5 \dfrac{m!}{k!(m-k)!} 9^k \\
-        &= \dfrac{m!}{5!}\displaystyle\sum_{k=0}^5 \dfrac{5!}{k!(m-k)!} 9^k \\
-        &\leq \dfrac{m!}{5!}\displaystyle\sum_{k=0}^5 \dfrac{5!}{k!(5-k)!} 9^k \\
-        &= \dfrac{7!}{5!}(1+9)^5 = 4,200,000
+  \implies  N &\geq \displaystyle\sum_{k=0}^5 \binom{7}{k} 3^k \\
+              &= 9,094
 \end{aligned}
 $$
 
-There are few slots supporting nine modifications in practice, so our bound for $N$ should be tighter.[^4]
-
-To get further, we need to propose a form for utility, our objective function. Composing it from a weighted sum of attribute contributions is a simple and intuitive model. More importantly, it will transform the problem into a tractable one that does not demand a brute force solution.
+Now suppose $n_i \leq 9 \ \forall \ i$ and $m \leq 8$.
 
 $$
 \begin{aligned}
-  U(\mathbf{x}) &= \displaystyle\sum_i U_i(x_i) \\
-                &= \displaystyle\sum_i u_ix_i \\
-                &= \mathbf{u} \cdot \mathbf{x}
+  \implies  N &\leq \displaystyle\sum_{k=0}^5 \binom{8}{k} 9^k \\
+              &= 3,809,179
 \end{aligned}
 $$
 
-Every utility coefficient $u_i$ needs to be positive to satisfy the nonsatiation assumption.
+That's a lot of permutations! Even so, a modern computer can churn out solutions by brute force in good time, whatever the utility function. Nevertheless, we should avoid an exhaustive search if possible.
+
+We can propose a simple closed-form expression for utility with some insight from gamers. Ask any player whether they appreciate each increase in, say, accuracy less than a previous increase. They will disagree vehemently.[^8]
+
+Hence,
+
+$$
+  \dfrac{\partial^2 U}{\partial x_i^2} = 0 \ \forall \ i
+$$
+
+, which implies
+
+$$
+  U(\mathbf{x}) = \sum_i u_i x_i + u_0
+$$
+
+$u_i$ represents the change in utility for every unit change in attribute $x_i$. Note that $u_i > 0 \ \forall \ i$ due to the non-satiation assumption.
+
+Since we are concerned with [ordinal utility](https://en.wikipedia.org/wiki/Ordinal_utility), we can drop the constant term $u_0$ and write
+
+$$
+  U(\mathbf{x}) = \sum_i u_i x_i = \mathbf{u} \cdot \mathbf{x}
+$$
+
+By happy accident, this linear mapping $U$ makes our optimization problem tractable!
 
 ## The Knapsack Problem
 
-Observe that maximizing the original objective $U$ is the same as maximizing a transformed one $U'$:
+Observe that we can write $U(\mathbf{x})$ in terms of boolean variables:
 
 $$
 \begin{aligned}
-  U'(\mathbf{x}) &= U(\mathbf{x}) - \mathbf{u} \cdot \mathbf{x_0} \\
-                 &= \mathbf{u} \cdot \left(\displaystyle\sum_i^m \displaystyle\sum_j^{n_i} X_{ij}\mathbf{\Delta x}_{ij}  \right) \\
-                 &= \displaystyle\sum_i^m \displaystyle\sum_j^{n_i} X_{ij} \times \mathbf{u} \cdot \mathbf{\Delta x}_{ij} \\
-                 &= \displaystyle\sum_i^m \displaystyle\sum_j^{n_i} P_{ij} X_{ij}
+  U(\mathbf{x}) &= \mathbf{u} \cdot \left(\displaystyle\sum_i^m \displaystyle\sum_j^{n_i} X_{ij}\mathbf{\Delta x}_{ij}  \right) + \mathbf{u} \cdot \mathbf{x_0} \\
+                &= \displaystyle\sum_i^m \displaystyle\sum_j^{n_i} X_{ij} \times \mathbf{u} \cdot \mathbf{\Delta x}_{ij} + \mathbf{u} \cdot \mathbf{x_0} \\
+                &= \displaystyle\sum_i^m \displaystyle\sum_j^{n_i} P_{ij} X_{ij} + \mathbf{u} \cdot \mathbf{x_0}
 \end{aligned}
 $$
+
+, where $P_{ij} = \mathbf{u} \cdot \mathbf{\Delta x}_{ij}$.[^9]
 
 Restating the whole problem, with constraints, for completeness:
 
 $$
-  \max \displaystyle\sum_i^m \displaystyle\sum_j^{n_i} P_{ij}X_{ij}
+  \max \displaystyle\sum_i^m \displaystyle\sum_j^{n_i} P_{ij}X_{ij} + \mathbf{u} \cdot \mathbf{x_0}
 $$
 
 subject to
@@ -145,106 +168,65 @@ $$
 \end{aligned}
 $$
 
-where $P_{ij} = \mathbf{u} \cdot \mathbf{\Delta x}_{ij}$.[^5]
+Thus, the optimization problem reduces to a variant of the Multiple-Choice [Knapsack Problem](https://en.wikipedia.org/wiki/Knapsack_problem), where
 
-Thus the optimization problem reduces to a variant of the Multiple-Choice [Knapsack Problem](https://en.wikipedia.org/wiki/Knapsack_problem) where each "price" $P_{ij}$ may be real-valued, but all the "objects" have the same weight -- 1.
+- item value $P_{ij}$ may be a real number, and
+- all items have the same weight.
 
-This simplification, courtesy of the problem domain, enables us to devise a simpler optimization algorithm to solve the Multiple-Choice Knapsack Problem than those reported in research papers.[^6]
+Since every attachment has the same cost, we can write a simple greedy algorithm that solves the Knapsack Problem:
 
-1. Sort the modifications in descending order of price `P[i][j]`
-2. While modification slots are still available, select the next modification `(i, j)` provided:
-   - its slot `i` is vacant
-   - its price `P[i][j]` is positive
+1. Sort the attachments in descending order of value `P[i][j]`
+2. While slots are still available, select an attachment `(i, j)` provided:
+   - its slot `i` is vacant, and
+   - its value `P[i][j]` is positive
 
-The runtime of this algorithm is dominated by sorting, which can be done in linearithmic time. Memory usage is linear in the number of available modifications. The following Java code implements this algorithm and incorporates a couple of practical improvements:
+The following Java code implements this algorithm:
 
 ```java
-public class WeaponOptimizer implements Optimizer<Weapon, Loadout> {
+public class WeaponOptimizer implements Optimizer<Weapon> {
   private final List<Double> utilityCoefficients;
-
-  public WeaponOptimizer(List<Double> utilityCoefficients) {
-    this.utilityCoefficients = utilityCoefficients;
-  }
 
   @Override
   public Pair<Double, Loadout> run(Weapon weapon) {
-    var attachments = new ArrayList<Triple<Slot, Attachment, Double>>();
-    for (var slot : weapon.slots()) {
-      for (var attachment : slot.availableAttachments()) {
+    var attachments = new ArrayList<Pair<Attachment, Double>>();
+    for (var slot : weapon.slots())
+      for (var attachment : slot.attachments()) {
         var price = attachment.price(utilityCoefficients);
-        // Disregard attachments with negative prices from the outset
-        if (price > 0) {
-          // Cache the computed price for sorting later
-          attachments.add(new Triple<>(slot, attachment, price));
-        }
+        if (price > 0)
+          attachments.add(new Pair<>(attachment, price));
       }
-    }
-    attachments.sort(priceComparator.reversed());
+
+    attachments.sort(comparator);
 
     var utility = weapon.utility(utilityCoefficients);
     var loadout = new Loadout(weapon);
+    for (var pair : attachments) {
+      var attachment = pair.first;
+      var price = pair.second;
 
-    for (var triple : attachments) {
-      var slot = triple.first();
-      var attachment = triple.second();
-      var price = triple.third();
       if (loadout.isFull())
         break;
-      if (!loadout.isFull(slot)) {
-        utility += price;
-        loadout.putAttachment(slot, attachment);
-      }
+      if (loadout.isFull(attachment.slot))
+        continue;
+
+      utility += price;
+      loadout.put(attachment.slot, attachment);
     }
     return new Pair<>(utility, loadout);
   }
 }
 ```
 
-Price and base utility calculators are namespaced in `Attachment` and `Weapon`, respectively:
+Sorting accounts for most of the running time of `run`. I did not translate the algorithm literally; there are a couple of practical improvements. `run` discards attachments of negative value before sorting. It also caches price calculations.
 
-```java
-public record Attachment(List<Double> attributes) {
-  /**
-   * Contribution of this attachment to weapon utility.
-   */
-  public double price(List<Double> utilityCoefficients) {
-    var total = 0;
-    for (var i = 0; i < attributes.size(); i++)
-      total += utilityCoefficients.get(i) * attributes.get(i);
-    return total;
-  }
-}
-
-public record Slot(Set<Attachment> availableAttachments) {}
-
-public record Weapon(List<Double> attributes, Set<Slot> slots) {
-  /**
-   * Base utility of a weapon.
-   */
-  public double utility(List<Double> utilityCoefficients) {
-    var total = 0;
-    for (var i = 0; i < attributes.size(); i++)
-      total += utilityCoefficients.get(i) * attributes.get(i);
-    return total;
-  }
-}
-```
-
-`Loadout` is a class that enforces game mechanics; i.e. it makes sure we can never
-
-1. populate a slot with a foreign attachment, or
-2. add more than five attachments to the weapon, or
-3. populate a slot more than once.
+`Loadout` represents a weapon and all its attachments:
 
 ```java
 public class Loadout {
   public static final int MAX_ATTACHMENTS = 5;
+
   public final Weapon weapon;
   private final Map<Slot, Attachment> attachments = new HashMap<>();
-
-  public Loadout(Weapon weapon) {
-    this.weapon = weapon;
-  }
 
   public boolean isFull() {
     return attachments.size() == MAX_ATTACHMENTS;
@@ -257,33 +239,35 @@ public class Loadout {
   public void put(Slot slot, Attachment attachment) {
     if (!weapon.slots().contains(slot))
       throw new IllegalArgumentException();
-    if (!slot.availableAttachments().contains(attachment))
-      throw new IllegalArgumentException(); // 1
+    if (!slot.attachments().contains(attachment))
+      throw new IllegalArgumentException();
     if (isFull())
-      throw new UnsupportedOperationException(); // 2
+      throw new UnsupportedOperationException();
     if (isFull(slot))
-      throw new UnsupportedOperationException(); // 3
+      throw new UnsupportedOperationException();
     attachments.put(slot, attachment);
   }
 }
 ```
 
-So far, the algorithm we have devised finds the best loadout for a single weapon. We can do better and determine the best loadout for all weapons.
+`put` ensures we don't
 
-Observe that attachment choice is tied to weapon choice. So we can decompose the problem by:
+1. occupy a slot with a foreign attachment,
+2. add more than five attachments to the weapon, or
+3. populate a slot multiple times.
 
-1. maximizing utility for every weapon independently (as before), and,
-2. finding the weapon in this set with the highest utility.
+The algorithm we devised finds the best loadout for a given weapon. We can do better and determine the best loadout in the game.
 
-In Java,
+Notice that attachment choice is tied to weapon choice. We should
+
+1. maximize utility for every weapon independently and then
+2. find the weapon with the highest utility
+
+to get the best loadout:
 
 ```java
-public class LoadoutOptimizer implements Optimizer<List<Weapon>, Loadout> {
-  private final Optimizer<Weapon, Loadout> weaponOptimizer;
-
-  public LoadoutOptimizer(Optimizer<Weapon, Loadout> weaponOptimizer) {
-    this.weaponOptimizer = weaponOptimizer;
-  }
+public class LoadoutOptimizer implements Optimizer<List<Weapon>> {
+  private final Optimizer<Weapon> weaponOptimizer;
 
   @Override
   public Pair<Double, Loadout> run(List<Weapon> weapons) {
@@ -296,19 +280,22 @@ public class LoadoutOptimizer implements Optimizer<List<Weapon>, Loadout> {
 }
 ```
 
-This optimizer accepts _any_ underlying optimizer conforming to the `Optimizer<Weapon, Loadout>` interface, so we can [stub](https://en.wikipedia.org/wiki/Method_stub) out `WeaponOptimizer` when testing `LoadoutOptimizer`.
+`LoadoutOptimizer` accepts _any_ underlying optimizer implementing the `Optimizer<Weapon>` interface. We can [stub](https://en.wikipedia.org/wiki/Method_stub) out `WeaponOptimizer` when testing `LoadoutOptimizer`.
 
 ## Model correctness
 
-It is difficult to verify the usefulness of applying Consumer Theory in this context mainly because of the lack of in-game weapon data. When I wrote this article, most weapon data reported online for Modern Warfare was obtained experimentally. It was also far from complete.
+It is difficult to verify the usefulness of applying Consumer Theory to the study of Gunsmith. Weapon data is not publicly available; it has to be obtained by experiment. Data reported online is incomplete because data collection is so onerous.
 
-[^1]: This is the case in real life, too.
-[^2]: The K in [MP5K](https://www.heckler-koch.com/en/products/military/submachine-guns/mp5/mp5k/overview.html) stands for _Kurz_, German for "short."
-[^3]:
-    For the sake of gameplay balance, this might not be entirely true. I bet the game won't allow you to eliminate recoil by stacking every recoil-reducing attachment on a weapon.
+[^1]: Players will claim otherwise!
+[^2]: This is the case in real life, too.
+[^3]: The K in [MP5K](https://www.heckler-koch.com/en/products/military/submachine-guns/mp5/mp5k/overview.html) stands for _Kurz_, German for "short."
+[^4]: $n$ denotes the number of weapon attributes.
+[^5]: Note that multiple loadouts can have the same attribute vector.
+[^6]:
+    OK, so not quite. Some modifications even prevent others from being made. For example, you cannot attach a compensator to the muzzle of an [MP5SD](https://www.heckler-koch.com/en/products/military/submachine-guns/mp5/mp5sd/overview.html). It has a sound suppressor built directly into its receiver.
 
-    Also, some modifications prevent others from being made: for instance, you cannot attach a compensator to the muzzle of an [MP5SD](https://www.heckler-koch.com/en/products/military/submachine-guns/mp5/mp5sd/overview.html) because it has a sound suppressor built directly into its receiver. These exceptions are rare enough that we can ignore them.
+    Still, exceptions are rare enough that we can pretend they don't exist.
 
-[^4]: Either way, $N$ is a large number.
-[^5]: $P_{ij}$ is the additional utility we derive from having the _j-th_ slot populated with the _i-th_ attachment.
-[^6]: Research papers like [Bednarczuk E. (2018)](https://doi.org/10.1007/s10589-018-9988-z) and [Pisinger D. (1995)](https://doi.org/10.1016/0377-2217%2895%2900015-I).
+[^7]: In other words, the [nonsatiation assumption](https://en.wikipedia.org/wiki/Local_nonsatiation) of Consumer Theory holds.
+[^8]: In other words, [marginal utility](https://en.wikipedia.org/wiki/Marginal_utility) does NOT diminish.
+[^9]: $P_{ij}$ is the additional utility we derive from having the $j$-th slot populated with the $i$-th attachment.

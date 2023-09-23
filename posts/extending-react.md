@@ -9,7 +9,7 @@ Facebook's JavaScript UI library React took the world of frontend development [b
 
 Unlike Model-View frameworks, React drives UI updates by declarative state management. Controversially, React introduced an XML-like syntax extension to JavaScript called [JSX](https://reactjs.org/docs/introducing-jsx.html). It allows programmers to combine markup and render logic in application code.
 
-The idioms React promoted were not initially well-received but quickly gained wide acceptance.
+The ideas React promotes were not initially well-received but quickly gained wide acceptance.
 
 We will extend React's JSX API to create a small NodeJS library for static site generation. The library will expose `File` and `Dir` JSX primitives that can be composed to define a website.
 
@@ -71,14 +71,6 @@ const PaginationLink = ({ slug }) => <a href={`/posts/${slug}.html`}>Next</a>;
 
 are equivalent ways of declaring a `PaginationLink` component. `PaginationLink` accepts a `slug` property or "prop" as input. `slug` tells a `PaginationLink` element where it should point.
 
-For example,
-
-```javascript
-<PaginationLink slug="extending-react" />
-```
-
-refers a reader to this post.
-
 You can regard an element as an instance of a component. Elements can be rendered to the DOM by a browser:
 
 ```javascript
@@ -89,7 +81,7 @@ render(node, document.getElementById("root"));
 Elements can also be serialized into a string by a server:
 
 ```javascript
-console.log(renderToStaticMarkup(<App />));
+renderToStaticMarkup(<App />);
 ```
 
 Note that function components and the `render` method of class components can themselves return elements; this is by design -- it enables composition.
@@ -132,7 +124,7 @@ const About = () => (
 
 Browsers and NodeJS cannot understand JSX, so it must be transpiled to plain JavaScript before use.
 
-During transpilation, transpilers such as [Babel](https://babeljs.io/) and [esbuild](https://esbuild.github.io/) transform any JSX expressions they encounter into calls of a JSX factory function. Historically, the factory was `React.createElement`. Now, transpilers accomodate a variety of UI frameworks through a [transpiler directive](<https://en.wikipedia.org/wiki/Directive_(programming)>).
+During transpilation, transpilers such as [Babel](https://babeljs.io/) and [esbuild](https://esbuild.github.io/) transform any JSX expressions they encounter into calls of a JSX factory function. Historically, the factory was `React.createElement`. Now, transpilers support a variety of UI frameworks through [transpiler directives](<https://en.wikipedia.org/wiki/Directive_(programming)>).
 
 For example, the script
 
@@ -153,25 +145,31 @@ const PaginationLink = ({ slug }) =>
   React.createElement("a", { href: `/posts/${slug}.html` }, "Next");
 
 renderToStaticMarkup(
-  React.createElement(PaginationLink, { slug: "extending-react" })
+  React.createElement(PaginationLink, { slug: "extending-react" }),
 );
 ```
 
 by the first stage of a preprocessor or transpiler for React.
 
-The JSX factory must take the form of
+Transpilers stipulate that the JSX factory must take the form
 
-```javascript
-function createElement(type, props, ...children) {}
+```typescript
+(name: Name, attributes: Attributes, ...children: Element[]) => Element;
 ```
 
 , where
 
-- `type` is the JSX element type,
-- `props` is an object keyed by props passed to the element, and
+- `name` is a JSX element name or a JavaScript [identifier](<https://en.wikipedia.org/wiki/Identifier_(computer_languages)>),
+
+- `attributes` is an object keyed by attributes, and
+
+```typescript
+type Attributes = { [key: string]: any } | null;
+```
+
 - `children` represents _transformed_ child elements.[^3]
 
-Also, note that the `React` object must be in scope wherever you use JSX.[^4]
+Also, note that the `React` object must be in scope wherever you use JSX with React.[^4]
 
 ## Putting pen to paper
 
@@ -309,7 +307,7 @@ function createDir(props, children) {
 
   if (!children.every((child) => child instanceof FileSystem)) {
     throw new IllegalArgumentError(
-      `Children of directory ${name} must be directory or file elements`
+      `Children of directory ${name} must be directory or file elements`,
     );
   }
   return new Dir(name, children);
@@ -324,7 +322,7 @@ function createFile(props, children) {
 
   if (children.length !== 1) {
     throw new IllegalArgumentError(
-      `File ${name} must have a single child element or string content`
+      `File ${name} must have a single child element or string content`,
     );
   }
 
@@ -340,9 +338,9 @@ function createFile(props, children) {
 
 That's it! We are done :tada:.[^6]
 
-[^1]: Before the introduction of [React Hooks](https://reactjs.org/docs/hooks-intro.html) in React 16.8, class and function components served different purposes. Now function components can also manipulate React state, class components are somewhat redundant.
-[^2]: React favours [composition over inheritance](https://en.wikipedia.org/wiki/Composition_over_inheritance).
-[^3]: `type` is a string for an element with a lowercase name and a function or class reference otherwise. Therefore, start the name of a user-defined React component with a capital letter. Altenatively, assign it to a capitalized variable before use.
+[^1]: Before the introduction of [React Hooks](https://reactjs.org/docs/hooks-intro.html) in React 16.8, class and function components served different purposes. Now that function components can also manipulate React state, class components are somewhat redundant.
+[^2]: React favors [composition over inheritance](https://en.wikipedia.org/wiki/Composition_over_inheritance).
+[^3]: `name` is a string for an element with a lowercase name and a JavaScript identifier otherwise. JSX users must ensure the identifier resolves to something sensible. Therefore, start the name of every user-defined React component with a capital letter and ensure it is in scope at call sites. Altenatively, assign the component to a capitalized variable before use.
 [^4]: Since the release of React 17, many transpilers [can "automatically import" React](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html) :open_mouth:.
 [^5]: [Fragment syntax](https://react.dev/reference/react/Fragment) allows components to return multiple elements without boilerplate code.
 [^6]: You did think of writing tests, right? Right?

@@ -7,7 +7,7 @@ summary: An introduction to property-based testing and its applications in stand
 
 Property testing is a strategy for verifying the correctness of complex programs and libraries. It involves defining a set of properties that programs should obey. Essentially, the programmer writes a specification for their work.
 
-You define properties with a property testing library, like Haskell's QuickCheck.[^1] These libraries also enable users to generate sample data to drive properties during test execution.
+You define properties with a property testing library, like Haskell's QuickCheck.[^1] These libraries also enable users to generate sample data to check properties during test execution.
 
 For example, this [ScalaCheck](https://www.scalacheck.org/) property says a JSON parser can decode any object it encodes:[^2]
 
@@ -57,17 +57,14 @@ then we can write mergesort as a [pure function](https://en.wikipedia.org/wiki/P
 
 ```scala
 def sort[T](list: List[T])(implicit ordering: Ordering[T]): List[T] =
-  list match {
-    case Nil         => Nil
-    case head :: Nil => list
-    case _ =>
-      split(list) match {
-        case (left, right) => merge(sort(left), sort(right))
-      }
-  }
+  if (list.length < 2) list
+  else
+    split(list) match {
+      case (left, right) => merge(sort(left), sort(right))
+    }
 ```
 
-This version of mergesort performs an asymptotically optimal number of comparisons, despite being pure.[^6]
+This version of mergesort performs an asymptotically optimal number of comparisons despite being pure.[^6]
 
 `split` is a general-purpose function.[^7] Like `sort`, `split` is recursive:
 
@@ -104,7 +101,7 @@ def merge(l: List[T], r: List[T]): List[T] =
 
 To use ScalaCheck, we need to be aware of two data types it exports: `Gen`, and `Prop`.
 
-A `Gen[T]` instance encodes all the information necessary to produce samples of type `T`. `Prop` allows us to define properties. A `Prop` instance verifies a property by sampling a `Gen[T]` instance.
+A `Gen[T]` instance encodes all the information necessary to produce samples of type `T`. `Prop` allows us to define properties. A `Prop` instance verifies a property by sampling from a `Gen[T]` instance.
 
 ### Writing generators
 
@@ -121,7 +118,7 @@ ScalaCheck will choose the number of lists to generate when running a test. It w
 
 ### Writing properties
 
-The first property practically writes itself if we already have a counter abstraction:
+The first property is simple to write if we already have a counter abstraction:
 
 ```scala
 object SortingSpecification extends Properties("sort") {
@@ -157,7 +154,7 @@ object Counter {
 }
 ```
 
-The second property is also simple to write:
+The second property practically writes itself:
 
 ```scala
 import math.Ordering.Implicits.infixOrderingOps
@@ -171,7 +168,7 @@ object SortingSpecification extends Properties("sort") {
 }
 ```
 
-If `sort` is faulty ScalaCheck will
+If `sort` is faulty, ScalaCheck will
 
 1. "shrink" input to find the smallest list it cannot sort, and
 2. print out the seed of the failing test run to aid debugging.
@@ -180,7 +177,7 @@ If `sort` is faulty ScalaCheck will
 failing seed for sort is 1GSNrW_g7K6qDK0yf7ZVqjncxQGRBA2_afg_I2PsRKC=
 ! sort.`permutes its input`: Falsified after 10 passed tests.
 > ARG_0: List("1", "1", "0")
-> ARG_0_ORIGINAL: LIst("10", "95", "78", "13", "64")
+> ARG_0_ORIGINAL: List("10", "95", "78", "13", "64")
 ```
 
 If you want more insight into how ScalaCheck works, look at the book [Functional Programming in Scala](https://www.manning.com/books/functional-programming-in-scala). In chapter eight, readers develop a property testing library from first principles.
@@ -189,7 +186,7 @@ If you want more insight into how ScalaCheck works, look at the book [Functional
 [^2]: You may wish to write regression tests to also verify `decode(str).map(encode) == Right(str)`.
 [^3]: You have been warned!
 [^4]:
-    Astute readers will realize `JsonSpecification` relies on sampling. We must use lazy generation to sample instances of tree [ADT](https://en.wikipedia.org/wiki/Abstract_data_type)s like `Json`.
+    Astute readers will realize that `JsonSpecification` relies on sampling. We must use lazy generation to sample instances of tree [ADT](https://en.wikipedia.org/wiki/Algebraic_data_type)s like `Json`.
 
     Here is one way of implementing `json`:
 

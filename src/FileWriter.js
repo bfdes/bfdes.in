@@ -36,7 +36,7 @@ export default class FileWriter {
       await this.writeDir(rootPath, file);
     } else {
       throw new IllegalArgumentError(
-        "Argument to `write` must be a file or directory"
+        "Argument to `write` must be a file or directory",
       );
     }
   }

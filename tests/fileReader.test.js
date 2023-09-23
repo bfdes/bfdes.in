@@ -71,7 +71,7 @@ describe("FileReader.read", () => {
     } catch (error) {
       expect(error).toBeInstanceOf(IllegalArgumentError);
       expect(error.message).toBe(
-        "Argument to `read` must be a file or directory"
+        "Argument to `read` must be a file or directory",
       );
     }
   });
@@ -190,9 +190,9 @@ describe("FileReader.read", () => {
         "src",
         mk(
           "components",
-          mk("HelloWorld.js", "export default () => <>Hello, World!</>")
-        )
-      )
+          mk("HelloWorld.js", "export default () => <>Hello, World!</>"),
+        ),
+      ),
     );
   });
 

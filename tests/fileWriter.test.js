@@ -21,7 +21,7 @@ describe("FileWriter.write", () => {
     expect(fs.writeFile).toHaveBeenCalledTimes(1);
     expect(fs.writeFile).toHaveBeenCalledWith(
       path.join(rootPath, name),
-      content
+      content,
     );
   });
 
@@ -34,7 +34,7 @@ describe("FileWriter.write", () => {
     } catch (error) {
       expect(error).toBeInstanceOf(IllegalArgumentError);
       expect(error.message).toBe(
-        "Argument to `write` must be a file or directory"
+        "Argument to `write` must be a file or directory",
       );
     }
   });
@@ -58,7 +58,7 @@ describe("FileWriter.write", () => {
     expect(fs.writeFile).toHaveBeenCalledTimes(1);
     expect(fs.writeFile).toHaveBeenCalledWith(
       path.join(rootPath, dirName, fileName),
-      fileContent
+      fileContent,
     );
   });
 
@@ -80,7 +80,7 @@ describe("FileWriter.write", () => {
     } catch (error) {
       expect(error).toBeInstanceOf(FileWriteError);
       expect(error.message).toBe(
-        `Could not write to ${path.join(rootPath, dirName)}`
+        `Could not write to ${path.join(rootPath, dirName)}`,
       );
     }
   });
@@ -104,7 +104,7 @@ describe("FileWriter.write", () => {
     } catch (error) {
       expect(error).toBeInstanceOf(FileWriteError);
       expect(error.message).toBe(
-        `Could not write to ${path.join(rootPath, dirName, fileName)}`
+        `Could not write to ${path.join(rootPath, dirName, fileName)}`,
       );
     }
   });

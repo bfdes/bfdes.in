@@ -6,7 +6,7 @@ export default class Attributes extends Map {
       attributes instanceof Attributes &&
       this.size == attributes.size &&
       Array.from(attributes).every(
-        ([name, value]) => this.has(name) && this.get(name) === value
+        ([name, value]) => this.has(name) && this.get(name) === value,
       )
     );
   }

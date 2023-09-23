@@ -22,7 +22,8 @@ export default class Element extends Expression {
     const name = escape(this.name);
     const attributes = Array.from(this.attributes)
       .map(
-        ([name, value]) => `${escape(String(name))}="${escape(String(value))}" `
+        ([name, value]) =>
+          `${escape(String(name))}="${escape(String(value))}" `,
       )
       .join("")
       .trim();

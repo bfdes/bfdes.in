@@ -11,9 +11,9 @@ const testCases = [
 ];
 
 describe("slugify", () => {
-  for (const [testCase, expectedValue] of testCases) {
-    it(`escapes "${testCase}"`, () => {
-      expect(slugify(testCase)).toBe(expectedValue);
+  for (const [testInput, expectedValue] of testCases) {
+    it(`escapes "${testInput}"`, () => {
+      expect(slugify(testInput)).toBe(expectedValue);
     });
   }
 });

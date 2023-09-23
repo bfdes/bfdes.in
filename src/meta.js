@@ -20,7 +20,7 @@ export class MissingMetadataKeysError extends IllegalArgumentError {
     super(
       `Required metadata ${keys.length > 1 ? "keys" : "key"} ${keys
         .map((key) => `"${key}"`)
-        .join(", ")} missing from ${fileName}`
+        .join(", ")} missing from ${fileName}`,
     );
   }
 }
@@ -30,7 +30,7 @@ export class InvalidMetadataKeysError extends IllegalArgumentError {
     super(
       `Invalid metadata ${keys.length > 1 ? "keys" : "key"} ${keys
         .map((key) => `"${key}"`)
-        .join(", ")} in ${fileName}`
+        .join(", ")} in ${fileName}`,
     );
   }
 }
@@ -77,7 +77,7 @@ export function parse(file) {
   }
 
   const invalidKeys = schemaKeys.filter(
-    (key) => !schema[key](frontmatter[key])
+    (key) => !schema[key](frontmatter[key]),
   );
   if (invalidKeys.length) {
     throw new InvalidMetadataKeysError(file.name, invalidKeys);

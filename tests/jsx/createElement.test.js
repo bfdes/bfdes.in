@@ -30,13 +30,13 @@ describe("JSX.createElement", () => {
           new Element("title", Attributes.empty(), ["index.html"]),
         ]),
         new Element("body", Attributes.empty(), ["Hello, World!"]),
-      ])
+      ]),
     );
   });
 
   it("rejects children passed through a named prop", () => {
     expect(() => <Languages children={["Python", "Java"]} />).toThrow(
-      IllegalArgumentError
+      IllegalArgumentError,
     );
   });
 
@@ -48,9 +48,9 @@ describe("JSX.createElement", () => {
         "ul",
         Attributes.empty(),
         languages.map(
-          (language) => new Element("li", Attributes.empty(), [language])
-        )
-      )
+          (language) => new Element("li", Attributes.empty(), [language]),
+        ),
+      ),
     );
   });
 
@@ -91,7 +91,7 @@ describe("File", () => {
     const content = <HelloWorld />;
 
     expect(<File name={name}>{content}</File>).toEqual(
-      mk(name, `<!DOCTYPE html>${content}`)
+      mk(name, `<!DOCTYPE html>${content}`),
     );
   });
 
@@ -100,7 +100,7 @@ describe("File", () => {
     const content = <Languages>{["Python", "Java"]}</Languages>;
 
     expect(<File name={name}>{content}</File>).toEqual(
-      mk(name, `<?xml version="1.0"?>${content}`)
+      mk(name, `<?xml version="1.0"?>${content}`),
     );
   });
 });
@@ -114,7 +114,7 @@ describe("Dir", () => {
     expect(
       <Dir name={dirName}>
         <File name={fileName}>{fileContent}</File>
-      </Dir>
+      </Dir>,
     ).toEqual(mk(dirName, mk(fileName, fileContent)));
   });
 

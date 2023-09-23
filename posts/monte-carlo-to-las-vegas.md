@@ -25,8 +25,8 @@ $$
 
 , where
 
-- $i \in I$[^1] if $$p$$ appears as a substring in $$t$$, and
-- $i = -1$ otherwise.[^2]
+- $i \in [0, |t|)$ if $$p$$ appears as a substring in $t$, and
+- $i = -1$ otherwise.[^1]
 
 Example usage in Python:
 
@@ -53,13 +53,13 @@ def find(pattern):
   return search
 ```
 
-It performs poorly for large text input.[^3] We can do much better by using Rabin-Karp search.[^4]
+It performs poorly for large text input.[^2] We can do much better by using Rabin-Karp search.[^3]
 
 We aim to enable library users to write the Las Vegas variant of the Rabin-Karp algorithm in terms of the Monte Carlo variant. That way, our library only has to export one implementation of Rabin-Karp search.
 
 ## Rabin-Karp search
 
-The Rabin-Karp algorithm attempts to find a search string by computing a rolling hash of text input.[^5] Its Monte Carlo variant returns the index that defines the first substring with a hash matching that of the search string. Note that a hash collision can result in a false positive match -- a spurious "hit."
+The Rabin-Karp algorithm attempts to find a search string by computing a rolling hash of text input.[^4] Its Monte Carlo variant returns the location of the first substring with the same hash as the search string. Note that a hash collision can result in a false positive match -- a spurious "hit."
 
 Looking at a concrete implementation of Rabin-Karp search will make things clear. Here is the Monte Carlo variant, written in Python:
 
@@ -102,7 +102,7 @@ def find(pattern):
   return search
 ```
 
-The Las Vegas variant performs an equality check to guard against spurious hits. It verifies the strings `pattern` and `text[i-m:i]` are the same before returning from the search loop. But this is equivalent to modifying the Monte Carlo variant to call itself on the remaining portion of text if an equality check fails, viz:
+The Las Vegas variant performs an equality check to guard against spurious hits. It verifies the strings `pattern` and `text[i-m:i]` are the same before returning from the search loop. But this is equivalent to modifying the Monte Carlo variant to call itself on the remaining portion of text if an equality check fails:
 
 ```python
 def find(pattern):
@@ -119,18 +119,18 @@ def find(pattern):
   return search
 ```
 
-Thus library users can quickly adapt the Monte Carlo variant of the algorithm to create the Las Vegas variant.
+Thus, library users can quickly adapt the Monte Carlo variant of the algorithm to create the Las Vegas variant.
 
 ## Engineering tradeoffs
 
-It's hard to get a free lunch.[^6] In this case, reusing code can result in poor performance and excessive memory usage when a search leads to **many** spurious hits.
+It's hard to get a free lunch.[^5] In this case, reusing code can result in poor performance and excessive memory usage when a search leads to **many** spurious hits.
 
 Each spurious hit:
 
 1. creates an extra stack frame, and
 2. reinitializes the rolling hash within `rabin_karp.find`.
 
-We can deal with the first problem by simply rewriting `find` in an iterative fashion:[^7]
+We can deal with the first problem by simply rewriting `find` in an iterative fashion:[^6]
 
 ```python
 def find(pattern):
@@ -151,14 +151,13 @@ def find(pattern):
 
 We can only solve the second problem by writing `find` entirely from scratch.
 
-The library can export the Monte Carlo implementation if it is not likely to be used when spurious hits are unacceptable. Unfortunately, library authors cannot be sure programmers will [RTFM](https://en.wikipedia.org/wiki/RTFM).
+The library can export just the Monte Carlo implementation of Rabin-Karp search, provided it ships with a disclaimer. Unfortunately, library authors cannot be sure programmers will [RTFM](https://en.wikipedia.org/wiki/RTFM).
 
 ## Acknowledgments
 
-I want to thank the people who reviewed the first draft of this blog post. [Adil Parvez](https://adilparvez.com) helped me define the tone of this article. [Scott Williams](https://scottw.co.uk) pointed out it is _always_ possible to go from a Las Vegas variant of an algorithm to a Monte Carlo variant.[^8]
+I want to thank the people who reviewed the first draft of this blog post. [Adil Parvez](https://adilparvez.com) helped me define the tone of this article. [Scott Williams](https://scottw.co.uk) pointed out it is _always_ possible to go from a Las Vegas variant of an algorithm to a Monte Carlo variant.[^7]
 
-[^1]: $$I = \{i \in \Z_0 : i < |t| \}$$
-[^2]:
+[^1]:
     This API is ideal for Rabin-Karp search. It enables a _small_ optimization: the library user can [memoize](https://en.wikipedia.org/wiki/Memoization) hashing. For example, `"needle"` has only been hashed once in
 
     ```python
@@ -169,9 +168,9 @@ I want to thank the people who reviewed the first draft of this blog post. [Adil
     -1
     ```
 
-[^3]: The runtime is $$O(mn)$$, where $$m$$ and $$n$$ are the number of characters in the search string and the text input.
-[^4]: Or Boyer-Moore search. Or Knuth-Morris-Pratt search.
-[^5]: The course [Algorithms I](https://www.coursera.org/learn/algorithms-part1) does a fine job explaining how the Rabin-Karp algorithm works.
-[^6]: Unless you work at Google :stuck_out_tongue:.
-[^7]: We can get away with using recursion when working in a language that supports tail-call optimization. Unfortunately, [Python does not](https://stackoverflow.com/a/13592002) :cry:.
-[^8]: An absurd way of implementing a Monte Carlo variant of Rabin-Karp given a Las Vegas variant is to return the correct index on every other invocation and a random one otherwise.
+[^2]: The runtime is $$O(mn)$$, where $$m$$ and $$n$$ are the number of characters in the search string and the text input.
+[^3]: Or Boyer-Moore search. Or Knuth-Morris-Pratt search.
+[^4]: The course [Algorithms I](https://www.coursera.org/learn/algorithms-part1) does a fine job explaining how the Rabin-Karp algorithm works.
+[^5]: Unless you work at Google :stuck_out_tongue:.
+[^6]: We can get away with using recursion when working in a language that supports tail-call optimization. Unfortunately, [Python does not](https://stackoverflow.com/a/13592002) :cry:.
+[^7]: An absurd way of implementing a Monte Carlo variant of Rabin-Karp given a Las Vegas variant is to return the correct index on every other invocation and a random one otherwise.

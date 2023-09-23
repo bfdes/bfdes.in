@@ -39,7 +39,7 @@ function createFile(props, children) {
 
   if (children.length !== 1) {
     throw new IllegalArgumentError(
-      `File ${name} must have a single child element or string content`
+      `File ${name} must have a single child element or string content`,
     );
   }
 
@@ -68,7 +68,7 @@ function createDir(props, children) {
 
   if (!children.every((child) => child instanceof FileSystem)) {
     throw new IllegalArgumentError(
-      `Children of directory ${name} must be directory or file elements`
+      `Children of directory ${name} must be directory or file elements`,
     );
   }
   return new Dir(name, children);
@@ -79,7 +79,7 @@ export default {
     props = props === null ? {} : props;
     if ("children" in props) {
       throw new IllegalArgumentError(
-        "JSX children may not be passed through a named prop"
+        "JSX children may not be passed through a named prop",
       );
     }
 

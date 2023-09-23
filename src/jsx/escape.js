@@ -10,14 +10,14 @@ export default function (string) {
     [">", "&gt;"],
   ]);
 
-  const stringBuilder = [];
+  const buffer = [];
 
   for (const char of string) {
     if (map.has(char)) {
-      stringBuilder.push(map.get(char));
+      buffer.push(map.get(char));
     } else {
-      stringBuilder.push(char);
+      buffer.push(char);
     }
   }
-  return stringBuilder.join("");
+  return buffer.join("");
 }

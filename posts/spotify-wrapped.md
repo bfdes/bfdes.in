@@ -211,7 +211,7 @@ order by count desc, release_year desc;
 
 (2013 and 1984 were good years for music, at least as far as I am concerned.)
 
-Counting library tracks by release decade is more instructive. You don't need a window function to achieve this. Notice that the release decade of a track is given by `release_year - release_year % 10`, so the query
+Counting library tracks by release decade is more interesting. You don't need a window function to do this. Notice that the release decade of a track is given by `release_year - release_year % 10`, so the query
 
 ```sql
 select
@@ -302,6 +302,6 @@ Rock, mainly classic rock, dominates my library:
     select count(distinct track.name) from track;
     ```
 
-[^7]: Release year 0 is a sentinel value for an orphaned album in my library.
+[^7]: 0 is a sentinel value for the publication date of an orphaned album in my library.
 [^8]: I mean, Rammstein is unlikely to collaborate with Taylor Swift.
-[^9]: Alternatively, [batch your requests](https://developer.spotify.com/documentation/web-api/reference/get-multiple-artists). You will make $ \left\lceil\dfrac{n}{50}\right\rceil$ API calls.
+[^9]: Alternatively, [batch your requests](https://developer.spotify.com/documentation/web-api/reference/get-multiple-artists). You will make $\left\lceil\dfrac{n}{50}\right\rceil$ API calls.
