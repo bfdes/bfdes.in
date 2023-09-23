@@ -499,7 +499,7 @@ class Expression {
 Here's some test code written with `contains`:
 
 ```javascript
-test("Meta renders publication date in Gregorian DMY format", () => {
+test("Meta renders publication date", () => {
   const meta = (
     <Meta
       created={new Date("2019-11-12")}
