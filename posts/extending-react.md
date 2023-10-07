@@ -11,7 +11,7 @@ Unlike Model-View frameworks, React drives UI updates by declarative state manag
 
 The ideas React promotes were not initially well-received but quickly gained wide acceptance.
 
-We will extend React's JSX API to create a small NodeJS library for static site generation. The library will expose `File` and `Dir` JSX primitives that can be composed to define a website.
+We will extend React's JSX API to create a small [NodeJS](https://nodejs.org) library for static site generation. The library will expose `File` and `Dir` JSX primitives that can be composed to define a website.
 
 For example, the following router describes part of this blog:
 
@@ -173,7 +173,7 @@ Also, note that the `React` object must be in scope wherever you use JSX with Re
 
 ## Putting pen to paper
 
-We can exploit a user-customizable JSX transform and composition to implement our API. The idea is simple: calls to `File` or `Dir` "components" should be intercepted and recast as instantiations of filesystem objects. These objects must know how to write their contents to disk recursively.
+We can exploit a user-customizable JSX Transform and composition to implement our API. The idea is simple: calls to `File` or `Dir` "components" should be intercepted and recast as instantiations of filesystem objects. These objects must know how to write their contents to disk recursively.
 
 ### The filesystem abstraction
 
@@ -340,7 +340,7 @@ That's it! We are done :tada:.[^6]
 
 [^1]: Before the introduction of [React Hooks](https://reactjs.org/docs/hooks-intro.html) in React 16.8, class and function components served different purposes. Now that function components can also manipulate React state, class components are somewhat redundant.
 [^2]: React favors [composition over inheritance](https://en.wikipedia.org/wiki/Composition_over_inheritance).
-[^3]: `name` is a string for an element with a lowercase name and a JavaScript identifier otherwise. JSX users must ensure the identifier resolves to something sensible. Therefore, start the name of every user-defined React component with a capital letter and ensure it is in scope at call sites. Altenatively, assign the component to a capitalized variable before use.
+[^3]: `name` is a string for an element with a lowercase name and a JavaScript identifier otherwise. JSX users must ensure the identifier resolves to something sensible. Therefore, start the name of every user-defined React component with a capital letter and ensure it is in scope at call sites. Alternatively, assign the component to a capitalized variable before use.
 [^4]: Since the release of React 17, many transpilers [can "automatically import" React](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html) :open_mouth:.
 [^5]: [Fragment syntax](https://react.dev/reference/react/Fragment) allows components to return multiple elements without boilerplate code.
 [^6]: You did think of writing tests, right? Right?

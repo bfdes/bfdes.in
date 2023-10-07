@@ -1,25 +1,25 @@
 ---
 title: The JSX Transform
 tags: [Transpilers]
-created: 2023-07-20
-summary: Implementing the JSX transform
+created: 2023-10-06
+summary: Implementing the JSX Transform
 ---
 
-A couple of years ago, I praised Facebook's frontend library, React. I [talked about](/posts/extending-react.html) how I hijacked React's JSX transform to write a static site generator (SSG). The SSG used to create this blog.[^1]
+A couple of years ago, I praised Facebook's frontend library, React. I [talked about](/posts/extending-react.html) how I hijacked React's JSX Transform to write a static site generator (SSG). The SSG used to create this blog.[^1]
 
-Since then, I realized React is not required to define a static website through JSX templates. Modern transpilers let us easily add support for JSX templates in our projects. In return for some more work, I was able to write an SSG with the following features:
+Since then, I realized React is not required to define a static website through JSX templating. Modern transpilers let us quickly implement our own JSX libraries from scratch. In return for minimal effort, I was able to write an SSG with the following features:
 
 1. HTML _and_ XML document generation
 2. Raw HTML injection
 3. Native HTML attribute support in JSX
 
-I will help you write the same SSG from scratch. You should still read [the first blog post](/posts/extending-react.html) to understand what follows.
+I will help you write the same SSG. You should read [the first blog post](/posts/extending-react.html) before continuing -- I frequently reference previous work.
 
 ## Desugaring JSX
 
-Transpilers like [Babel](https://babeljs.io) and [esbuild](https://esbuild.github.io) parse JSX expressions and transform them into calls of a factory function.
+As you know, browsers and [NodeJS](https://nodejs.org) cannot understand JSX, so it must be transpiled to plain JavaScript before use.
 
-The factory function path is a transpiler directive. You can specify the path in transpiler configuration files like babel.config.js or jsconfig.json.
+Transpilers like [Babel](https://babeljs.io) and [esbuild](https://esbuild.github.io) parse JSX expressions and transform them into calls of a factory function. The path to the factory function is a transpiler directive. You can specify the path in transpiler configuration files like babel.config.js or jsconfig.json.
 
 jsconfig.json should look like
 
@@ -51,7 +51,7 @@ type Attributes = { [key: string]: any } | null;
 
 - `children` represents _transformed_ child elements.
 
-Before implementing the factory, it is instructive to play around in [a JSX transpiler REPL](https://babeljs.io/repl). We make some crucial observations:
+Before we write the factory, you should play in [a JSX transpiler REPL](https://babeljs.io/repl). Hopefully, you observe five things:
 
 1. `name` is a string for an element with a lowercase name and a JavaScript identifier otherwise[^3]
 
@@ -216,7 +216,7 @@ In my view, it is far better for the JSX factory to reject children passed throu
 
 JSX expressions can be elements or fragments. A fragment wraps a series of child expressions in a tag with no name.
 
-To see why fragments are helpful, take a look at component `Tags`, which formats tag strings for display:
+To see why fragments are handy, take a look at component `Tags`, which formats tag strings for display:
 
 ```javascript
 const Tags = ({ children }) => (
@@ -269,7 +269,7 @@ const Tags = ({ children }) =>
 
 ## Putting pen to paper
 
-Let's implement the JSX factory, `elem`, armed with our knowledge of the JSX transform.
+Let's implement the JSX factory, `elem`, armed with our knowledge of the JSX Transform.
 
 `elem` should begin with input sanitation. It must
 
@@ -465,7 +465,7 @@ It verifies the sidebar of this blog displays four links.
 
 ### `contains`
 
-`contains` can implemented with `find`. Suppose `Expression` has an `equals` method that uses [value semantics](https://en.wikipedia.org/wiki/Value_object).[^7] Then we can write
+`contains` can implemented with `find`. Suppose `Expression` has an `equals` method that respects [value semantics](https://en.wikipedia.org/wiki/Value_object).[^7] Then we can write
 
 ```javascript
 class Expression {
@@ -514,12 +514,12 @@ test("Meta renders publication date", () => {
 
 It verifies this blog displays publication dates in Gregorian format.
 
-OK, _now_ we are done. We have a JSX UI library written with relatively little code. But remember: this library is limited to static site generation!
+OK, _now_ we are done. We wrote a JSX UI library in less time than it takes to learn React. But remember: this library is limited to static site generation!
 
 [^1]: I am acutely aware of where I feature on [this diagram](https://rakhim.org/images/honestly-undefined/blogging.jpg).
-[^2]: This guide refers to the classic JSX transform, not the one introduced in React 17.
+[^2]: This guide refers to the classic JSX Transform, not the one introduced in React 17.
 [^3]: In the case where React is the JSX library, identifiers should resolve to function or class components. Our library will only support stateless function components.
 [^4]: Imagine a `Languages` element is passed `["Python", "Java"]` in a first render and `["Java", "Python"]` in a re-render. Without keys, React will recreate all DOM nodes corresponding to the `Languages` element; with stable and unique keys, React will recognize that children have changed places.
 [^5]: The library that processes blog post markup returns raw HTML. Accepting user-generated raw HTML will likely lead to XSS attacks, but injecting HTML from a trusted source at build time is fine.
-[^6]: According to StackOverflow users :grimacing:.
-[^7]: `equals` is tedious to implement, and therefore left as an exercise for the reader :stuck_out_tongue:.
+[^6]: According to [StackOverflow](https://stackoverflow.com) users :grimacing:.
+[^7]: `equals` is tedious to implement. I leave it as an exercise for the reader :stuck_out_tongue:.
