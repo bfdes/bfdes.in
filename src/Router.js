@@ -14,7 +14,7 @@ import JSX, { File, Dir } from "./jsx";
 import mainCSS from "./main.css";
 import manifest from "./manifest.webmanifest";
 import slugify from "./slugify";
-import githubCSS from "@wooorm/starry-night/style/light.css";
+import githubCSS from "@wooorm/starry-night/style/light";
 import KaTeXAMSRegularTTF from "katex/dist/fonts/KaTeX_AMS-Regular.ttf";
 import KaTeXAMSRegularWOFF from "katex/dist/fonts/KaTeX_AMS-Regular.woff";
 import KaTeXAMSRegularWOFF2 from "katex/dist/fonts/KaTeX_AMS-Regular.woff2";
