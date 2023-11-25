@@ -51,13 +51,13 @@ Recognize that $U$ represents microeconomic [utility](https://en.wikipedia.org/w
 
 We can safely assume two things:
 
-1. Each attribute contributes independently to utility[^6]
+1. Each attribute contributes independently to utility
 
 $$
 U(\mathbf{x}) = \displaystyle\sum_i U_i(x_i)
 $$
 
-2. Large attribute values are always better than small ones[^7]
+2. Large attribute values are always better than small ones[^6]
 
 $$
 \dfrac{\partial U}{\partial x_i} > 0 \ \forall \ i
@@ -114,7 +114,7 @@ $$
 
 That's a lot of permutations! Even so, a modern computer can churn out solutions by brute force in good time, whatever the utility function. Nevertheless, we should avoid an exhaustive search if possible.
 
-We can propose a simple closed-form expression for utility with some insight from gamers. Ask any player whether they appreciate each increase in, say, accuracy less than a previous increase. They will disagree vehemently.[^8]
+We can propose a simple closed-form expression for utility with some insight from gamers. Ask any player whether they appreciate each increase in, say, accuracy less than a previous increase. They will disagree vehemently.[^7]
 
 Hence,
 
@@ -150,7 +150,7 @@ $$
 \end{aligned}
 $$
 
-, where $P_{ij} = \mathbf{u} \cdot \mathbf{\Delta x}_{ij}$.[^9]
+, where $P_{ij} = \mathbf{u} \cdot \mathbf{\Delta x}_{ij}$.[^8]
 
 Restating the whole problem, with constraints, for completeness:
 
@@ -291,11 +291,6 @@ It is difficult to verify the usefulness of applying Consumer Theory to the stud
 [^3]: The K in [MP5K](https://www.heckler-koch.com/en/products/military/submachine-guns/mp5/mp5k/overview.html) stands for _Kurz_, German for "short."
 [^4]: $n$ denotes the number of weapon attributes.
 [^5]: Note that multiple loadouts can have the same attribute vector.
-[^6]:
-    OK, so not quite. Some modifications even prevent others from being made. For example, you cannot attach a compensator to the muzzle of an [MP5SD](https://www.heckler-koch.com/en/products/military/submachine-guns/mp5/mp5sd/overview.html). It has a sound suppressor built directly into its receiver.
-
-    Still, exceptions are rare enough that we can pretend they don't exist.
-
-[^7]: In other words, the [nonsatiation assumption](https://en.wikipedia.org/wiki/Local_nonsatiation) of Consumer Theory holds.
-[^8]: In other words, [marginal utility](https://en.wikipedia.org/wiki/Marginal_utility) does NOT diminish.
-[^9]: $P_{ij}$ is the additional utility we derive from having the $j$-th slot populated with the $i$-th attachment.
+[^6]: In other words, the [nonsatiation assumption](https://en.wikipedia.org/wiki/Local_nonsatiation) of Consumer Theory holds.
+[^7]: In other words, [marginal utility](https://en.wikipedia.org/wiki/Marginal_utility) does NOT diminish.
+[^8]: $P_{ij}$ is the additional utility we derive from having the $j$-th slot populated with the $i$-th attachment.
