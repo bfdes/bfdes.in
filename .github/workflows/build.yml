@@ -9,9 +9,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Pull repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up NodeJS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
@@ -20,7 +20,9 @@ jobs:
       - name: Run tests
         run: npm test
       - name: Upload test coverage report
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
   publish:
     name: Publish
     needs: test
@@ -29,9 +31,9 @@ jobs:
       deployments: write
     steps:
       - name: Pull repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up NodeJS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
