@@ -287,10 +287,17 @@ public class LoadoutOptimizer implements Optimizer<List<Weapon>> {
 It is difficult to verify the usefulness of applying Consumer Theory to the study of Gunsmith. Weapon data is not publicly available; it has to be obtained by experiment. Data reported online is incomplete because data collection is so onerous.
 
 [^1]: Players will claim otherwise!
+
 [^2]: This is the case in real life, too.
+
 [^3]: The K in [MP5K](https://www.heckler-koch.com/en/products/military/submachine-guns/mp5/mp5k/overview.html) stands for _Kurz_, German for "short."
+
 [^4]: $n$ denotes the number of weapon attributes.
+
 [^5]: Note that multiple loadouts can have the same attribute vector.
+
 [^6]: In other words, the [nonsatiation assumption](https://en.wikipedia.org/wiki/Local_nonsatiation) of Consumer Theory holds.
+
 [^7]: In other words, [marginal utility](https://en.wikipedia.org/wiki/Marginal_utility) does NOT diminish.
+
 [^8]: $P_{ij}$ is the additional utility we derive from having the $j$-th slot populated with the $i$-th attachment.

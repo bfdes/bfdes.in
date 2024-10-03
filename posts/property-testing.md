@@ -183,8 +183,11 @@ failing seed for sort is 1GSNrW_g7K6qDK0yf7ZVqjncxQGRBA2_afg_I2PsRKC=
 If you want more insight into how ScalaCheck works, look at the book [Functional Programming in Scala](https://www.manning.com/books/functional-programming-in-scala). In chapter eight, readers develop a property testing library from first principles.
 
 [^1]: QuickCheck [pioneered](https://doi.org/10.1145/351240.351266) property testing.
+
 [^2]: You may wish to write regression tests to also verify `decode(str).map(encode) == Right(str)`.
+
 [^3]: You have been warned!
+
 [^4]:
     Astute readers will realize that `JsonSpecification` relies on sampling. We must use lazy generation to sample instances of tree [ADT](https://en.wikipedia.org/wiki/Algebraic_data_type)s like `Json`.
 
@@ -218,11 +221,14 @@ If you want more insight into how ScalaCheck works, look at the book [Functional
     Let $$D$$ be a random variable that denotes the depth of nested collections. It can be shown that $$D \sim \text{Geo}\left(\dfrac{1}{2}\right)$$. Thus, on average, `json` will generate collections with two levels of nesting.
 
 [^5]: Many applications require stable sorting. Users of a food delivery app usually sort restaurants by customer rating, and then by delivery distance. They expect the app to rank equally distant restaurants in order of customer rating.
+
 [^6]: It can be shown that top-down mergesort performs $$\Theta(n\lg n)$$ comparisons.
+
 [^7]:
     This elegant implementation of `split` [is due to Evan Czaplicki's professor](https://functional-programming-in-elm.netlify.app/appendix/split.html).
 
     Unfortunately, `split` leads to an unstable sort :cry:. Why is that? Can you write a crude version of `split` that leads to a stable sort?
 
 [^8]: You can prove this result by [mathematical induction](https://en.wikipedia.org/wiki/Mathematical_induction). Start by assuming it holds for all lists of length $$2n$$, where $$n \in \Z_0$$.
+
 [^9]: Obtaining representative samples is tricky. Larger lists can encode exponentially more states than smaller ones. Should a sorting algorithm be tested more frequently with large lists? :thinking:

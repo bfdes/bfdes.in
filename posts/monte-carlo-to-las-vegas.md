@@ -169,8 +169,13 @@ I want to thank the people who reviewed the first draft of this blog post. [Adil
     ```
 
 [^2]: The runtime is $$O(mn)$$, where $$m$$ and $$n$$ are the number of characters in the search string and the text input.
+
 [^3]: Or Boyer-Moore search. Or Knuth-Morris-Pratt search.
+
 [^4]: The course [Algorithms I](https://www.coursera.org/learn/algorithms-part1) does a fine job explaining how the Rabin-Karp algorithm works.
+
 [^5]: Unless you work at Google :stuck_out_tongue:.
+
 [^6]: We can get away with using recursion when working in a language that supports tail-call optimization. Unfortunately, [Python does not](https://stackoverflow.com/a/13592002) :cry:.
+
 [^7]: An absurd way of implementing a Monte Carlo variant of Rabin-Karp given a Las Vegas variant is to return the correct index on every other invocation and a random one otherwise.

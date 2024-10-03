@@ -339,8 +339,13 @@ function createFile(props, children) {
 That's it! We are done :tada:.[^6]
 
 [^1]: Before the introduction of [React Hooks](https://reactjs.org/docs/hooks-intro.html) in React 16.8, class and function components served different purposes. Now that function components can also manipulate React state, class components are somewhat redundant.
+
 [^2]: React favors [composition over inheritance](https://en.wikipedia.org/wiki/Composition_over_inheritance).
+
 [^3]: `name` is a string for an element with a lowercase name and a JavaScript identifier otherwise. JSX users must ensure the identifier resolves to something sensible. Therefore, start the name of every user-defined React component with a capital letter and ensure it is in scope at call sites. Alternatively, assign the component to a capitalized variable before use.
+
 [^4]: Since the release of React 17, many transpilers [can "automatically import" React](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html) :open_mouth:.
+
 [^5]: [Fragment syntax](https://react.dev/reference/react/Fragment) allows components to return multiple elements without boilerplate code.
+
 [^6]: You did think of writing tests, right? Right?
