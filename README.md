@@ -13,7 +13,7 @@ The first build step uses a bundler to transpile a JSX-based filesystem descript
 
 ### Requirements
 
-- [NodeJS](https://nodejs.org/en/) 20
+- [NodeJS](https://nodejs.org/en/) 22
 
 Run the following commands within the repository root:
 
