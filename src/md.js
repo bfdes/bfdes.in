@@ -1,7 +1,7 @@
 import * as meta from "./meta";
-import rehypeStarryNight from "./rehypeStarryNight";
 import slugify from "./slugify";
 import rehypeKatex from "rehype-katex";
+import rehypeStarryNight from "rehype-starry-night";
 import rehypeStringify from "rehype-stringify";
 import remarkGemoji from "remark-gemoji";
 import remarkGFM from "remark-gfm";
