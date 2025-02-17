@@ -18,8 +18,8 @@
     "test": "node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js --verbose --coverage"
   },
   "dependencies": {
+    "@shikijs/rehype": "^2.4.1",
     "rehype-katex": "^7.0.1",
-    "rehype-starry-night": "^2.2.0",
     "rehype-stringify": "^10.0.1",
     "remark-gemoji": "^8.0.0",
     "remark-gfm": "^4.0.1",
