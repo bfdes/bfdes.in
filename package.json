@@ -36,5 +36,13 @@
     "esbuild": "^0.25.0",
     "jest": "^29.7.0",
     "prettier": "^3.5.2"
+  },
+  "overrides": {
+    "hast-util-raw": {
+      "parse5": "7.2.1"
+    },
+    "hast-util-from-html": {
+      "parse5": "7.2.1"
+    }
   }
 }
