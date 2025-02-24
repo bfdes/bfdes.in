@@ -1,7 +1,7 @@
 import * as meta from "./meta";
 import slugify from "./slugify";
+import rehypeShiki from "@shikijs/rehype";
 import rehypeKatex from "rehype-katex";
-import rehypeStarryNight from "rehype-starry-night";
 import rehypeStringify from "rehype-stringify";
 import remarkGemoji from "remark-gemoji";
 import remarkGFM from "remark-gfm";
@@ -39,7 +39,9 @@ export async function parse(file) {
     .use(remarkGFM)
     .use(remarkMath)
     .use(remarkRehype)
-    .use(rehypeStarryNight)
+    .use(rehypeShiki, {
+      theme: "github-light-default",
+    })
     .use(rehypeKatex)
     .use(rehypeStringify)
     .process(vfile)

@@ -17,7 +17,6 @@ const Head = () => (
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Roboto+Flex&family=Roboto+Mono&amp;display=swap"
     />
-    <link rel="stylesheet" href="/styles/github.css" />
     <link rel="stylesheet" href="/styles/katex.css" />
     <link rel="stylesheet" href="/styles/main.css" />
   </head>
