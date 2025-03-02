@@ -5,9 +5,9 @@ describe("Element", () => {
     it("delegates to `Element.equals`", () => {
       const element = <link>https://google.com</link>;
 
-      expect(element.contains(<link>https://google.com</link>)).toBe(true);
-      expect(element.contains(<blink>https://google.com</blink>)).toBe(false);
-      expect(element.contains(<link>https://amazon.com</link>)).toBe(false);
+      expect(element.contains(<link>https://google.com</link>)).toBeTruthy();
+      expect(element.contains(<blink>https://google.com</blink>)).toBeFalsy();
+      expect(element.contains(<link>https://amazon.com</link>)).toBeFalsy();
     });
 
     it("recurses on children", () => {
@@ -17,8 +17,8 @@ describe("Element", () => {
         </branch>
       );
 
-      expect(element.contains(<leaf>content</leaf>)).toBe(true);
-      expect(element.contains("content")).toBe(true);
+      expect(element.contains(<leaf>content</leaf>)).toBeTruthy();
+      expect(element.contains("content")).toBeTruthy();
     });
   });
 

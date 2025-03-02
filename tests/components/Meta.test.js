@@ -11,7 +11,7 @@ const meta = (
 
 describe("Meta", () => {
   it("renders publication date in Gregorian DMY format", () => {
-    expect(meta.contains("12 November 2019")).toBe(true);
+    expect(meta.contains("12 November 2019")).toBeTruthy();
   });
 
   it("links to posts tagged with the same topic", () => {

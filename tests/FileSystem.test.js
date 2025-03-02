@@ -7,16 +7,16 @@ describe("FileSystem.contains", () => {
 
     const file = mk(name, content);
 
-    expect(file.contains(name)).toBe(true);
-    expect(file.contains("index.html")).toBe(false);
+    expect(file.contains(name)).toBeTruthy();
+    expect(file.contains("index.html")).toBeFalsy();
   });
 
   it("matches against directory name", () => {
     const name = "src";
     const emptyDir = mk(name);
 
-    expect(emptyDir.contains(name)).toBe(true);
-    expect(emptyDir.contains("dist")).toBe(false);
+    expect(emptyDir.contains(name)).toBeTruthy();
+    expect(emptyDir.contains("dist")).toBeFalsy();
   });
 
   it("recusively checks non-empty directories", () => {
@@ -26,6 +26,6 @@ describe("FileSystem.contains", () => {
 
     const dir = mk(dirName, mk(fileName, fileContent));
 
-    expect(dir.contains(fileName)).toBe(true);
+    expect(dir.contains(fileName)).toBeTruthy();
   });
 });

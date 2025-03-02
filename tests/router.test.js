@@ -1,18 +1,5 @@
 import Router from "src/Router";
 
-expect.extend({
-  toContain(router, fileName) {
-    const pass = router.contains(fileName);
-    const msg = pass
-      ? `expected router not to contain ${fileName}`
-      : `expected router to contain ${fileName}`;
-    return {
-      pass,
-      message: () => msg,
-    };
-  },
-});
-
 const router = Router([
   {
     title: "My first post",
@@ -36,33 +23,33 @@ const router = Router([
 
 describe("Router", () => {
   it("creates blog", () => {
-    expect(router).toContain("site");
+    expect(router.contains("site")).toBeTruthy();
 
-    expect(router).toContain("about.html");
-    expect(router).toContain("404.html");
+    expect(router.contains("about.html")).toBeTruthy();
+    expect(router.contains("404.html")).toBeTruthy();
 
-    expect(router).toContain("index.html");
-    expect(router).toContain("posts");
+    expect(router.contains("index.html")).toBeTruthy();
+    expect(router.contains("posts")).toBeTruthy();
 
-    expect(router).toContain("images");
-    expect(router).toContain("avatar.webp");
+    expect(router.contains("images")).toBeTruthy();
+    expect(router.contains("avatar.webp")).toBeTruthy();
 
-    expect(router).toContain("styles");
-    expect(router).toContain("main.css");
+    expect(router.contains("styles")).toBeTruthy();
+    expect(router.contains("main.css")).toBeTruthy();
 
-    expect(router).toContain("feed.rss");
-    expect(router).toContain("feed.xml");
-    expect(router).toContain("rss.xml");
+    expect(router.contains("feed.rss")).toBeTruthy();
+    expect(router.contains("feed.xml")).toBeTruthy();
+    expect(router.contains("rss.xml")).toBeTruthy();
   });
 
   it("creates all posts", () => {
-    expect(router).toContain("my-first-post.html");
-    expect(router).toContain("my-second-post.html");
+    expect(router.contains("my-first-post.html")).toBeTruthy();
+    expect(router.contains("my-second-post.html")).toBeTruthy();
   });
 
   it("creates blog indices", () => {
-    expect(router).toContain("tags");
-    expect(router).toContain("python.html");
-    expect(router).toContain("java.html");
+    expect(router.contains("tags")).toBeTruthy();
+    expect(router.contains("python.html")).toBeTruthy();
+    expect(router.contains("java.html")).toBeTruthy();
   });
 });

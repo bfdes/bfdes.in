@@ -21,7 +21,7 @@ describe("Attributes.equals", () => {
     const attributes = new Attributes(args);
     const map = new Map(args);
 
-    expect(attributes.equals(map)).toBe(false);
+    expect(attributes.equals(map)).toBeFalsy();
   });
 
   it("returns `false` when one collection is a subset of another", () => {
@@ -31,21 +31,21 @@ describe("Attributes.equals", () => {
     ]);
     const subset = new Attributes([["name1", "value1"]]);
 
-    expect(superset.equals(subset)).toBe(false);
-    expect(subset.equals(superset)).toBe(false);
+    expect(superset.equals(subset)).toBeFalsy();
+    expect(subset.equals(superset)).toBeFalsy();
   });
 
   it("returns `false` when names differ", () => {
     const first = new Attributes([["name", "value"]]);
     const second = new Attributes([["key", "value"]]);
 
-    expect(first.equals(second)).toBe(false);
+    expect(first.equals(second)).toBeFalsy();
   });
 
   it("returns `false` when values differ", () => {
     const first = new Attributes([["name", 1]]);
     const second = new Attributes([["name", 2]]);
 
-    expect(first.equals(second)).toBe(false);
+    expect(first.equals(second)).toBeFalsy();
   });
 });
