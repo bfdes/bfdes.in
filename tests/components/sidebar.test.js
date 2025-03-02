@@ -1,3 +1,4 @@
+import { expect, describe, it } from "bun:test";
 import Sidebar from "src/components/Sidebar";
 import JSX from "src/jsx";
 

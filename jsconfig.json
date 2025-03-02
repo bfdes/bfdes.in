@@ -1,7 +1,0 @@
-{
-  "compilerOptions": {
-    "jsxFactory": "JSX.createElement",
-    "jsxFragmentFactory": "JSX.Fragment"
-  },
-  "exclude": ["build.js"]
-}

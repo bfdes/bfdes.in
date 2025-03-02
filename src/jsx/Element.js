@@ -1,6 +1,5 @@
 import Attributes from "./Attributes";
 import Expression from "./Expression";
-import escape from "./escape";
 
 export default class Element extends Expression {
   constructor(name, attributes = Attributes.empty(), children = []) {
@@ -19,11 +18,11 @@ export default class Element extends Expression {
   }
 
   toString() {
-    const name = escape(this.name);
+    const name = Bun.escapeHTML(this.name);
     const attributes = Array.from(this.attributes)
       .map(
         ([name, value]) =>
-          `${escape(String(name))}="${escape(String(value))}" `,
+          `${Bun.escapeHTML(name)}="${Bun.escapeHTML(value)}" `,
       )
       .join("")
       .trim();

@@ -1,3 +1,4 @@
+import { expect, describe, it } from "bun:test";
 import slugify from "src/slugify";
 
 const testCases = [

@@ -1,3 +1,4 @@
+import { expect, describe, it } from "bun:test";
 import JSX from "src/jsx";
 
 describe("Element", () => {
@@ -5,9 +6,9 @@ describe("Element", () => {
     it("delegates to `Element.equals`", () => {
       const element = <link>https://google.com</link>;
 
-      expect(element.contains(<link>https://google.com</link>)).toBeTruthy();
-      expect(element.contains(<blink>https://google.com</blink>)).toBeFalsy();
-      expect(element.contains(<link>https://amazon.com</link>)).toBeFalsy();
+      expect(element.contains(<link>https://google.com</link>)).toBeTrue();
+      expect(element.contains(<blink>https://google.com</blink>)).toBeFalse();
+      expect(element.contains(<link>https://amazon.com</link>)).toBeFalse();
     });
 
     it("recurses on children", () => {
@@ -17,8 +18,8 @@ describe("Element", () => {
         </branch>
       );
 
-      expect(element.contains(<leaf>content</leaf>)).toBeTruthy();
-      expect(element.contains("content")).toBeTruthy();
+      expect(element.contains(<leaf>content</leaf>)).toBeTrue();
+      expect(element.contains("content")).toBeTrue();
     });
   });
 

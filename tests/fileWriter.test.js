@@ -1,5 +1,5 @@
 import mk from "./mk";
-import { jest } from "@jest/globals";
+import { expect, describe, it, mock } from "bun:test";
 import path from "path";
 import FileWriteError from "src/FileWriteError";
 import FileWriter from "src/FileWriter";
@@ -12,7 +12,7 @@ describe("FileWriter.write", () => {
     const name = "main.js";
     const content = 'console.log("Hello, World!")';
     const fs = {
-      writeFile: jest.fn(),
+      writeFile: mock(),
     };
     const fileWriter = new FileWriter(fs);
     const file = mk(name, content);
@@ -44,8 +44,8 @@ describe("FileWriter.write", () => {
     const fileName = "main.js";
     const fileContent = 'console.log("Hello, World!")';
     const fs = {
-      mkdir: jest.fn(),
-      writeFile: jest.fn(),
+      mkdir: mock(),
+      writeFile: mock(),
     };
     const fileWriter = new FileWriter(fs);
     const dir = mk(dirName, mk(fileName, fileContent));
@@ -91,7 +91,7 @@ describe("FileWriter.write", () => {
     const fileName = "main.js";
     const fileContent = 'console.log("Hello, World!")';
     const fs = {
-      mkdir: jest.fn(),
+      mkdir: mock(),
       async writeFile() {
         throw new Error();
       },

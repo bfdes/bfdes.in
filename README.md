@@ -5,27 +5,22 @@
 
 Static site generator and markup for my blog.
 
-This SSG is written in JavaScript and runs under the NodeJS runtime. NodeJS does not understand JSX, nor can it import assets like stylesheets and images as strings using `import` syntax. As a result, the project requires two build steps.
-
-The first build step uses a bundler to transpile a JSX-based filesystem description of the blog. It writes a portable script to disk. The second build step runs the script under NodeJS. The script consumes markup from the current working directory to build the blog.
+This SSG is written in JavaScript and runs under the Bun runtime. The project requires two build steps. The first build step uses Bun as a bundler to transpile a JSX-based filesystem description of the blog. It writes a portable script to disk. The second build step runs the script under Bun. It consumes markup from the current working directory to build the blog.
 
 ## Usage
 
 ### Requirements
 
-- [NodeJS](https://nodejs.org/en/) 22
+- [Bun](https://bun.sh) v1.2
 
 Run the following commands within the repository root:
 
 ```
-npm install
+bun install
 # Installs all dependencies
 
-npm run build:project
-# Builds the static site generator and writes it to disk as build.js
-
-npm run build:site
-# Builds the website itself under /site
+bun run publish
+# Builds the blog and puts it under /site
 ```
 
 ### Editing posts
@@ -68,15 +63,15 @@ presents inline math, delimited by `$`, and fenced code blocks, delimited by ` `
 Run the following commands to format and test code:
 
 ```
-npm run format
-npm test
+bun format
+bun test
 ```
 
 [GitHub Actions](https://github.com/bfdes/bfdes.in/actions) will run tests for every code push.
 
 ## Deployment
 
-The output of `npm run build:site` can be
+The output of `bun run publish` can be
 
 1. served by a web server such as [NGINX](https://www.nginx.com/), or
 2. hosted by a platform like [GitHub Pages](https://pages.github.com/).

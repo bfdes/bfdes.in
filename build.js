@@ -1,10 +1,6 @@
-import { build } from "esbuild";
-
-await build({
-  bundle: true,
-  entryPoints: ["src/main.js"],
+await Bun.build({
+  entryPoints: ["src/publish.js"],
   loader: {
-    ".js": "jsx",
     ".webmanifest": "text",
     ".css": "text",
     ".webp": "binary",
@@ -17,9 +13,6 @@ await build({
     ".woff": "binary",
     ".woff2": "binary",
   },
-  outfile: "build.js",
-  format: "esm",
-  platform: "node",
-  sourcemap: "inline",
-  target: "node22",
+  outdir: ".",
+  target: "bun",
 });

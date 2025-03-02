@@ -1,3 +1,4 @@
+import { expect, describe, it } from "bun:test";
 import JSX from "src/jsx";
 
 describe("Expression.find", () => {

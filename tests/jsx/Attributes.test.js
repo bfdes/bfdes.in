@@ -1,3 +1,4 @@
+import { expect, describe, it } from "bun:test";
 import Attributes from "src/jsx/Attributes";
 
 describe("Attributes.equals", () => {
@@ -21,7 +22,7 @@ describe("Attributes.equals", () => {
     const attributes = new Attributes(args);
     const map = new Map(args);
 
-    expect(attributes.equals(map)).toBeFalsy();
+    expect(attributes.equals(map)).toBeFalse();
   });
 
   it("returns `false` when one collection is a subset of another", () => {
@@ -31,21 +32,21 @@ describe("Attributes.equals", () => {
     ]);
     const subset = new Attributes([["name1", "value1"]]);
 
-    expect(superset.equals(subset)).toBeFalsy();
-    expect(subset.equals(superset)).toBeFalsy();
+    expect(superset.equals(subset)).toBeFalse();
+    expect(subset.equals(superset)).toBeFalse();
   });
 
   it("returns `false` when names differ", () => {
     const first = new Attributes([["name", "value"]]);
     const second = new Attributes([["key", "value"]]);
 
-    expect(first.equals(second)).toBeFalsy();
+    expect(first.equals(second)).toBeFalse();
   });
 
   it("returns `false` when values differ", () => {
     const first = new Attributes([["name", 1]]);
     const second = new Attributes([["name", 2]]);
 
-    expect(first.equals(second)).toBeFalsy();
+    expect(first.equals(second)).toBeFalse();
   });
 });

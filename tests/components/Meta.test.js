@@ -1,3 +1,4 @@
+import { expect, describe, it } from "bun:test";
 import Meta from "src/components/Meta";
 import JSX from "src/jsx";
 
@@ -11,7 +12,7 @@ const meta = (
 
 describe("Meta", () => {
   it("renders publication date in Gregorian DMY format", () => {
-    expect(meta.contains("12 November 2019")).toBeTruthy();
+    expect(meta.contains("12 November 2019")).toBeTrue();
   });
 
   it("links to posts tagged with the same topic", () => {

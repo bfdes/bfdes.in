@@ -1,3 +1,4 @@
+import { expect, describe, it } from "bun:test";
 import Router from "src/Router";
 
 const router = Router([
@@ -23,33 +24,33 @@ const router = Router([
 
 describe("Router", () => {
   it("creates blog", () => {
-    expect(router.contains("site")).toBeTruthy();
+    expect(router.contains("site")).toBeTrue();
 
-    expect(router.contains("about.html")).toBeTruthy();
-    expect(router.contains("404.html")).toBeTruthy();
+    expect(router.contains("about.html")).toBeTrue();
+    expect(router.contains("404.html")).toBeTrue();
 
-    expect(router.contains("index.html")).toBeTruthy();
-    expect(router.contains("posts")).toBeTruthy();
+    expect(router.contains("index.html")).toBeTrue();
+    expect(router.contains("posts")).toBeTrue();
 
-    expect(router.contains("images")).toBeTruthy();
-    expect(router.contains("avatar.webp")).toBeTruthy();
+    expect(router.contains("images")).toBeTrue();
+    expect(router.contains("avatar.webp")).toBeTrue();
 
-    expect(router.contains("styles")).toBeTruthy();
-    expect(router.contains("main.css")).toBeTruthy();
+    expect(router.contains("styles")).toBeTrue();
+    expect(router.contains("main.css")).toBeTrue();
 
-    expect(router.contains("feed.rss")).toBeTruthy();
-    expect(router.contains("feed.xml")).toBeTruthy();
-    expect(router.contains("rss.xml")).toBeTruthy();
+    expect(router.contains("feed.rss")).toBeTrue();
+    expect(router.contains("feed.xml")).toBeTrue();
+    expect(router.contains("rss.xml")).toBeTrue();
   });
 
   it("creates all posts", () => {
-    expect(router.contains("my-first-post.html")).toBeTruthy();
-    expect(router.contains("my-second-post.html")).toBeTruthy();
+    expect(router.contains("my-first-post.html")).toBeTrue();
+    expect(router.contains("my-second-post.html")).toBeTrue();
   });
 
   it("creates blog indices", () => {
-    expect(router.contains("tags")).toBeTruthy();
-    expect(router.contains("python.html")).toBeTruthy();
-    expect(router.contains("java.html")).toBeTruthy();
+    expect(router.contains("tags")).toBeTrue();
+    expect(router.contains("python.html")).toBeTrue();
+    expect(router.contains("java.html")).toBeTrue();
   });
 });

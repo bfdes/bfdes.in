@@ -1,5 +1,3 @@
-// https://github.com/istanbuljs/v8-to-istanbul/issues/198
-
 export default (value) =>
   value
     .toLowerCase()
