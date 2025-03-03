@@ -1,5 +1,3 @@
-// https://github.com/istanbuljs/v8-to-istanbul/issues/198
-
 export { default as About } from "./About";
 export { default as NotFound } from "./NotFound";
 export { default as Post } from "./Post";
