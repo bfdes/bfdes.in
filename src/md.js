@@ -1,5 +1,6 @@
 import * as meta from "./meta";
 import slugify from "./slugify";
+import { all } from "@wooorm/starry-night";
 import rehypeKatex from "rehype-katex";
 import rehypeStarryNight from "rehype-starry-night";
 import rehypeStringify from "rehype-stringify";
@@ -39,7 +40,9 @@ export async function parse(file) {
     .use(remarkGFM)
     .use(remarkMath)
     .use(remarkRehype)
-    .use(rehypeStarryNight)
+    .use(rehypeStarryNight, {
+      grammars: all,
+    })
     .use(rehypeKatex)
     .use(rehypeStringify)
     .process(vfile)
