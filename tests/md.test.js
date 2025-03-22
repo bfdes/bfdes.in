@@ -108,7 +108,7 @@ describe("md.parse", () => {
     try {
       await parse(file);
     } catch (error) {
-      expect(error).toBeInstanceOf(FrontmatterParseError);
+      expect(error).toBeInstanceOf(MissingFrontmatterError);
     }
   });
 

@@ -45,16 +45,12 @@ const schema = {
 export function parse(file) {
   const vfile = new VFile(file.content);
 
-  try {
-    const parseOptions = {
-      customTags: [
-        "timestamp", // Parse datetime fields according to YAML 1.1 spec
-      ],
-    };
-    matter(vfile, { strip: true, yaml: parseOptions });
-  } catch (_) {
-    throw new FrontmatterParseError(file.name);
-  }
+  const parseOptions = {
+    customTags: [
+      "timestamp", // Parse datetime fields according to YAML 1.1 spec
+    ],
+  };
+  matter(vfile, { strip: true, yaml: parseOptions });
 
   const frontmatter = vfile.data.matter;
 
