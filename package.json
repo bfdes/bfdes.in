@@ -26,7 +26,7 @@
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
     "remark-parse": "^11.0.0",
-    "remark-rehype": "^11.1.1",
+    "remark-rehype": "^11.1.2",
     "vfile": "^6.0.3",
     "vfile-matter": "^5.0.1"
   },
