@@ -34,7 +34,7 @@
     "@swc/core": "^1.13.3",
     "@swc/jest": "^0.2.39",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-    "esbuild": "^0.25.8",
+    "esbuild": "^0.25.9",
     "jest": "^30.0.5",
     "prettier": "^3.6.2"
   }
