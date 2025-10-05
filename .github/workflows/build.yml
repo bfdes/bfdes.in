@@ -1,5 +1,7 @@
 name: Test & Publish
 on: push
+permissions:
+  contents: read
 jobs:
   test:
     name: Test
