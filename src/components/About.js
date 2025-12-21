@@ -12,7 +12,7 @@ export default () => (
       <p>
         I studied Chemical Engineering{" "}
         <a href="https://www.cam.ac.uk">at university</a>. My interests include
-        programming, applied maths and amateur photography -- in that order.
+        motorcycles, photography, programming, and applied maths.
       </p>
       <p>
         I work at Disney Streaming in London. The views I express are my own and
