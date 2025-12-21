@@ -10,9 +10,9 @@ export default () => (
         Hello, my name is Bruno Fernandes, and I write code for fun and profit.
       </p>
       <p>
-        I studied Chemical Engineering{" "}
-        <a href="https://www.cam.ac.uk">at university</a>. My interests include
-        motorcycles, photography, programming, and applied maths.
+        I (regrettably) studied Chemical Engineering{" "}
+        <a href="https://www.cam.ac.uk">at university</a>. My other interests include
+        motorcycles, photography, and applied maths.
       </p>
       <p>
         I work at Disney Streaming in London. The views I express are my own and
