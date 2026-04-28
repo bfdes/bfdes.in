@@ -11,8 +11,8 @@ export default () => (
       </p>
       <p>
         I (regrettably) studied Chemical Engineering{" "}
-        <a href="https://www.cam.ac.uk">at university</a>. My other interests include
-        motorcycles, photography, and applied maths.
+        <a href="https://www.cam.ac.uk">at university</a>. My other interests
+        include motorcycles, photography, and applied maths.
       </p>
       <p>
         I work at Disney Streaming in London. The views I express are my own and
