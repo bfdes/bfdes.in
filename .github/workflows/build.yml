@@ -48,6 +48,6 @@ jobs:
         with:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          command: pages deploy site
+          command: pages deploy site --project-name=blog
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           wranglerVersion: latest
